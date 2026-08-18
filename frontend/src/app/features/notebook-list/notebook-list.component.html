@@ -1,0 +1,88 @@
+<div class="page">
+  <header class="page__header">
+    <div>
+      <h1>Quellwerk</h1>
+      <p class="page__tagline">Deine Quellen, gesammelt an einem Ort – befragbar, mit Beleg.</p>
+    </div>
+    @if (!isCreating()) {
+      <button type="button" class="btn btn--primary" (click)="startCreate()">
+        + Neues Notebook
+      </button>
+    }
+  </header>
+
+  @if (isCreating()) {
+    <form class="create-row" (ngSubmit)="submitCreate()">
+      <input
+        type="text"
+        placeholder="Titel, z. B. „Recherche Marktanalyse Q3“"
+        [ngModel]="newTitle()"
+        (ngModelChange)="newTitle.set($event)"
+        name="newTitle"
+        autofocus
+      />
+      <button type="submit" class="btn btn--primary" [disabled]="!newTitle().trim() || creating()">
+        Anlegen
+      </button>
+      <button type="button" class="btn btn--ghost" (click)="cancelCreate()">Abbrechen</button>
+    </form>
+  }
+
+  @if (error()) {
+    <p class="state state--error">{{ error() }}</p>
+  }
+
+  @if (loading() && notebooks().length === 0) {
+    <p class="state">Notebooks werden geladen …</p>
+  }
+
+  @if (!loading() && notebooks().length === 0 && !error()) {
+    <div class="empty-state">
+      <p class="empty-state__title">Noch kein Notebook angelegt.</p>
+      <p class="empty-state__body">
+        Ein Notebook sammelt deine Quellen und beantwortet Fragen ausschließlich
+        auf ihrer Basis. Leg dein erstes an, um loszulegen.
+      </p>
+    </div>
+  }
+
+  @if (notebooks().length > 0) {
+    <ul class="notebook-grid">
+      @for (notebook of notebooks(); track notebook.id) {
+        <li>
+          <a class="notebook-card" [routerLink]="['/notebooks', notebook.id]">
+            @if (editingId() === notebook.id) {
+              <input
+                class="notebook-card__title-input"
+                type="text"
+                [ngModel]="editTitle()"
+                (ngModelChange)="editTitle.set($event)"
+                (click)="$event.preventDefault(); $event.stopPropagation()"
+                (blur)="submitEdit(notebook.id)"
+                (keydown.enter)="submitEdit(notebook.id)"
+                (keydown.escape)="cancelEdit()"
+                autofocus
+              />
+            } @else {
+              <h2 class="notebook-card__title">{{ notebook.title }}</h2>
+            }
+            <p class="notebook-card__meta">Angelegt am {{ formatDate(notebook.createdAt) }}</p>
+
+            <div class="notebook-card__actions">
+              @if (pendingDeleteId() === notebook.id) {
+                <span class="confirm-delete">
+                  Wirklich löschen?
+                  <button type="button" class="link-btn link-btn--danger" (click)="confirmDelete(notebook.id, $event)">Ja, löschen</button>
+                  <button type="button" class="link-btn" (click)="cancelDelete($event)">Abbrechen</button>
+                </span>
+              } @else {
+                <button type="button" class="link-btn" (click)="startEdit(notebook, $event)">Umbenennen</button>
+                <button type="button" class="link-btn link-btn--danger" (click)="askDelete(notebook.id, $event)">Löschen</button>
+              }
+            </div>
+          </a>
+        </li>
+      }
+    </ul>
+  }
+</div>
