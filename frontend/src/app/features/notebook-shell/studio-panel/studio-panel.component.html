@@ -1,0 +1,11 @@
+<div class="rail">
+  <h2 class="rail__title">Studio</h2>
+  <ul class="planned-list">
+    @for (item of plannedOutputs; track item.label) {
+      <li class="planned-item">
+        <span class="planned-item__label">{{ item.label }}</span>
+        <span class="planned-item__note">{{ item.note }}</span>
+      </li>
+    }
+  </ul>
+</div>

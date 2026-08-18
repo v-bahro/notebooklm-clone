@@ -1,0 +1,47 @@
+@if (notebook(); as nb) {
+  <div class="shell">
+    <header class="shell__header">
+      <a routerLink="/" class="back-link" aria-label="Zurück zur Übersicht">←</a>
+      @if (editingTitle()) {
+        <input
+          class="shell__title-input"
+          type="text"
+          [ngModel]="titleDraft()"
+          (ngModelChange)="titleDraft.set($event)"
+          (blur)="submitTitle()"
+          (keydown.enter)="submitTitle()"
+          autofocus
+        />
+      } @else {
+        <h1 class="shell__title" (click)="startEditTitle()" title="Klicken zum Umbenennen">
+          {{ nb.title }}
+        </h1>
+      }
+    </header>
+
+    <div class="shell__body">
+      <aside class="shell__rail shell__rail--left">
+        <app-sources-panel></app-sources-panel>
+      </aside>
+
+      <main class="shell__workspace">
+        <div class="workspace-placeholder">
+          <p class="workspace-placeholder__title">Chat folgt in der nächsten Ausbaustufe.</p>
+          <p class="workspace-placeholder__body">
+            Sobald Quellen hochgeladen werden können, beantwortet Quellwerk Fragen
+            ausschließlich auf ihrer Basis – mit Zitat zur genauen Stelle.
+          </p>
+        </div>
+      </main>
+
+      <aside class="shell__rail shell__rail--right">
+        <app-studio-panel></app-studio-panel>
+      </aside>
+    </div>
+  </div>
+} @else if (notFound()) {
+  <div class="not-found">
+    <p>Dieses Notebook wurde nicht gefunden.</p>
+    <a routerLink="/">Zurück zur Übersicht</a>
+  </div>
+}

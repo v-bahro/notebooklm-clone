@@ -1,0 +1,29 @@
+.rail {
+  height: 100%;
+  padding: var(--space-md);
+}
+
+.rail__title {
+  font-size: 0.95rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--ink-soft);
+  margin-bottom: var(--space-md);
+}
+
+.rail__empty {
+  border: 1px dashed var(--rule);
+  border-radius: var(--radius);
+  padding: var(--space-md);
+}
+
+.rail__empty-title {
+  font-family: var(--font-display);
+  margin: 0 0 var(--space-xs);
+}
+
+.rail__empty-body {
+  color: var(--ink-soft);
+  font-size: 0.85rem;
+  margin: 0;
+}

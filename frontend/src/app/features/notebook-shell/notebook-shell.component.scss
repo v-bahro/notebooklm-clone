@@ -1,0 +1,119 @@
+.shell {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.shell__header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  padding: var(--space-sm) var(--space-lg);
+  border-bottom: 1px solid var(--rule);
+  background: var(--paper-raised);
+  flex-shrink: 0;
+}
+
+.back-link {
+  color: var(--ink-soft);
+  text-decoration: none;
+  font-size: 1.2rem;
+
+  &:hover {
+    color: var(--accent);
+  }
+}
+
+.shell__title {
+  font-size: 1.15rem;
+  cursor: text;
+}
+
+.shell__title-input {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  border: 1px solid var(--accent);
+  border-radius: var(--radius-sm);
+  padding: 0.2rem 0.5rem;
+  background: var(--paper);
+  flex: 1;
+  max-width: 480px;
+}
+
+.shell__body {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 260px 1fr 260px;
+  min-height: 0;
+}
+
+.shell__rail {
+  overflow-y: auto;
+  min-height: 0;
+}
+
+.shell__rail--left {
+  border-right: 1px solid var(--rule);
+}
+
+.shell__rail--right {
+  border-left: 1px solid var(--rule);
+}
+
+.shell__workspace {
+  overflow-y: auto;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-lg);
+
+  // Signatur-Element: dezente Lineatur wie liniertes Papier
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent,
+    transparent 27px,
+    var(--rule) 27px,
+    var(--rule) 28px
+  );
+  background-position: 0 60px;
+}
+
+.workspace-placeholder {
+  max-width: 40ch;
+  text-align: center;
+  background: var(--paper);
+  padding: var(--space-sm);
+}
+
+.workspace-placeholder__title {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  margin: 0 0 var(--space-xs);
+}
+
+.workspace-placeholder__body {
+  color: var(--ink-soft);
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+.not-found {
+  padding: var(--space-xl);
+  text-align: center;
+  color: var(--ink-soft);
+}
+
+@media (max-width: 860px) {
+  .shell__body {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto auto;
+    overflow-y: auto;
+  }
+
+  .shell__rail--left,
+  .shell__rail--right {
+    border: none;
+    border-bottom: 1px solid var(--rule);
+  }
+}
