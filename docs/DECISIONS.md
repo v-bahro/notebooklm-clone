@@ -30,3 +30,11 @@ Bewusst gegen warme Creme-Fläche + Serif + Terracotta-Akzent entschieden
 Stattdessen: gedämpftes Papier-Weiß, gedeckter Tintenblau-Akzent, dezente
 Lineatur im Arbeitsbereich als Anspielung auf ein echtes Notizbuch. Details
 siehe `docs/DESIGN.md`.
+
+## 2026-08 – Font-Inlining im Production-Build deaktiviert
+Angular versucht im Production-Build standardmäßig, Google-Fonts-CSS zur
+Build-Zeit zu inlinen (externer Netzwerk-Call). Deaktiviert
+(`optimization.fonts: false`), damit der Build nicht von der Erreichbarkeit
+von fonts.googleapis.com zur Build-Zeit abhängt – robuster für CI/CD. Die
+Fonts werden weiterhin zur Laufzeit über die `<link>`-Tags in `index.html`
+geladen.

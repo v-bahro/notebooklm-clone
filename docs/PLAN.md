@@ -40,18 +40,24 @@ für HR nachzuvollziehen als Nx-Monorepo oder zwei separate Repos.
 
 ## Phasen (Basic-First, wie besprochen)
 
-### Phase 0 – Setup
-- Repo-Grundgerüst (`/frontend` Angular, `/backend` NestJS)
-- Doku-Skelett: `PLAN.md`, `ARCHITECTURE.md`, `DECISIONS.md`, README
-- CI-light: Lint/Build-Check (optional GitHub Action)
+### Phase 0 – Setup ✅
+- [x] Repo-Grundgerüst (`/frontend` Angular, `/backend` NestJS)
+- [x] Doku-Skelett: `PLAN.md`, `ARCHITECTURE.md`, `DECISIONS.md`, `DESIGN.md`, README
+- [ ] CI-light: Lint/Build-Check (optional GitHub Action) – noch offen
 - Commit: `chore: initial project scaffold`
 
-### Phase 1 – Basic Website (NotebookLM-Layout, ohne Funktion)
-- Angular-Routing, 3-Spalten-Layout, Design-Tokens (Farben, Typografie)
-- Notebook anlegen/umbenennen/löschen (CRUD, NestJS + Postgres)
-- Leerer Zustand für Quellen- und Studio-Panel
-- **Meilenstein:** man kann durch die App klicken, Notebooks anlegen –
-  noch kein Upload, kein Chat
+### Phase 1 – Basic Website (NotebookLM-Layout, ohne Funktion) ✅
+- [x] Angular-Routing, 3-Spalten-Layout, Design-Tokens (Farben, Typografie)
+- [x] Notebook anlegen/umbenennen/löschen (CRUD, NestJS + Postgres)
+- [x] Leerer Zustand für Quellen- und Studio-Panel
+- **Umgesetzt:** Notebook-Übersicht (`/`) mit Anlegen/Umbenennen/Löschen
+  (Inline-Editing statt Browser-`prompt()`/`confirm()`), 3-Spalten-Notebook-
+  Ansicht (`/notebooks/:id`) mit editierbarem Titel. Design-System aus
+  `docs/DESIGN.md` umgesetzt (Papier-Palette, Source Serif 4 / IBM Plex,
+  dezente Lineatur im Arbeitsbereich als Signatur-Element). Backend-CRUD
+  end-to-end gegen echtes Postgres verifiziert (Create/Read/Update/Delete,
+  Validierungsfehler 400, 404 nach Delete). `ng build --configuration
+  production` läuft fehlerfrei durch.
 
 ### Phase 2 – File Upload (erstes echtes Feature)
 - NestJS-Endpoint für Upload (PDF, .txt, eingefügter Text)
