@@ -31,6 +31,20 @@ Stattdessen: gedämpftes Papier-Weiß, gedeckter Tintenblau-Akzent, dezente
 Lineatur im Arbeitsbereich als Anspielung auf ein echtes Notizbuch. Details
 siehe `docs/DESIGN.md`.
 
+## 2026-08 – Quellen: extrahierter Text in Postgres statt S3-Bucket
+Ursprünglich war ein S3-kompatibler Bucket (Supabase Storage/MinIO) für
+Original-Dateien vorgesehen. In der Umsetzung von Phase 2 zeigte sich: der
+eigentliche Wert einer Quelle für Quellwerk ist ihr extrahierter Text (für
+Anzeige und später RAG), nicht die Original-Datei selbst – "Quelle
+anklickbar → Rohtext-Ansicht" laut Plan, nicht "Original-PDF ansehen". Ein
+Bucket hätte zusätzliche Infrastruktur (eigener Account, Credentials,
+Netzwerk-Fehlerfälle) für einen Anwendungsfall bedeutet, der praktisch nicht
+gebraucht wird. Stattdessen: PDF/TXT wird beim Upload serverseitig geparst
+(`pdf-parse` v2 für PDF), nur der extrahierte Text landet als `text`-Spalte
+auf dem `sources`-Eintrag in Postgres. Vorteil auch fürs Deployment: kein
+zusätzlicher Storage-Dienst nötig, funktioniert unverändert auf Render ohne
+persistentes Volume.
+
 ## 2026-08 – Font-Inlining im Production-Build deaktiviert
 Angular versucht im Production-Build standardmäßig, Google-Fonts-CSS zur
 Build-Zeit zu inlinen (externer Netzwerk-Call). Deaktiviert

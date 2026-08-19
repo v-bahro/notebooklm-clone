@@ -13,10 +13,12 @@ Quellstelle zurückverweisen.
 ```
 
 ## Stand
-Phase 1 abgeschlossen: Notebook-Übersicht (anlegen/umbenennen/löschen),
+Phase 1 + 2 abgeschlossen: Notebook-Übersicht (anlegen/umbenennen/löschen),
 3-Spalten-Notebook-Ansicht (Quellen | Arbeitsbereich | Studio) mit eigenem
-Design-System. Backend-CRUD läuft gegen echtes Postgres, End-to-end manuell
-verifiziert. Details und weitere Phasen: siehe `docs/PLAN.md`.
+Design-System, Quellen hochladen (PDF/.txt) oder als Text einfügen, Liste
+mit Rohtext-Ansicht und Löschen. Backend läuft gegen echtes Postgres,
+End-to-end manuell verifiziert. Details und weitere Phasen: siehe
+`docs/PLAN.md`.
 
 ## Lokal starten
 

@@ -18,7 +18,7 @@ Deliverables laut Aufgabenstellung:
 | Frontend | Angular (standalone components) + TypeScript + SCSS | Vincents Alltagsstack, hohe Sicherheit/Geschwindigkeit |
 | Backend | NestJS + TypeORM (oder Prisma) | Vincents Alltagsstack, saubere modulare Architektur |
 | Datenbank | PostgreSQL + `pgvector`-Extension | Relationale Daten + Vektorsuche in einem System |
-| Storage | S3-kompatibler Bucket (Supabase Storage oder MinIO) | Einfache Anbindung an NestJS, kein eigenes Dateisystem-Handling |
+| Storage | Extrahierter Text direkt in Postgres (kein Bucket) | Siehe `docs/DECISIONS.md` – Original-Datei wird nicht dauerhaft gebraucht, nur ihr Text |
 | Frontend-Hosting | Netlify | Vincents übliches Setup, Angular-Build direkt deploybar |
 | Backend-Hosting | Render (Docker-Deploy) | verlässlich, TLS/Proxy/Restarts managed, minimaler Ops-Aufwand während der zeitkritischen Testaufgabe |
 | LLM (später) | Claude API | für RAG-Chat, Summary-Generierung |
@@ -59,12 +59,23 @@ für HR nachzuvollziehen als Nx-Monorepo oder zwei separate Repos.
   Validierungsfehler 400, 404 nach Delete). `ng build --configuration
   production` läuft fehlerfrei durch.
 
-### Phase 2 – File Upload (erstes echtes Feature)
-- NestJS-Endpoint für Upload (PDF, .txt, eingefügter Text)
-- Storage-Anbindung (Bucket)
-- Textextraktion aus PDF (z. B. `pdf-parse`)
-- Quellen-Liste im Frontend, Quelle anklickbar → Rohtext-Ansicht
-- **Meilenstein:** Datei hochladen, sehen dass sie verarbeitet wurde
+### Phase 2 – File Upload (erstes echtes Feature) ✅
+- [x] NestJS-Endpoint für Upload (PDF, .txt, eingefügter Text)
+- [x] Textextraktion aus PDF (`pdf-parse` v2) und .txt
+- [x] Quellen-Liste im Frontend, Quelle anklickbar → Rohtext-Ansicht
+- **Umgesetzt:** `SourcesModule` (Backend) mit `/notebooks/:id/sources`
+  (Upload via `FileInterceptor`, Text-Endpoint für eingefügten Text, Liste,
+  Löschen, Cascade-Delete über die Notebook-FK). Extrahierter Text landet
+  direkt als Postgres-`text`-Spalte auf dem `sources`-Eintrag – **kein
+  separater Bucket** (siehe `docs/DECISIONS.md`, Abweichung vom ursprünglichen
+  Plan). Frontend: Quellen-Panel mit Datei-Upload, "Text einfügen"-Formular,
+  Quellen-Liste mit Lösch-Bestätigung (gleiches Inline-Muster wie bei
+  Notebooks), Klick auf Quelle zeigt Rohtext im Arbeitsbereich. End-to-end
+  gegen echtes Postgres verifiziert (Upload .txt/.pdf, Text einfügen, Liste,
+  Ansehen, Löschen, Cascade-Delete beim Notebook-Löschen, Fehlerfälle:
+  falscher Dateityp, nicht vorhandenes Notebook) sowie im Browser (Angular
+  Dev-Server) durchgeklickt. Beide Production-Builds laufen fehlerfrei durch.
+- **Meilenstein erreicht:** Datei hochladen, sehen dass sie verarbeitet wurde.
 
 ### Phase 3 – RAG-Chat
 - Chunking + Embeddings beim Upload
