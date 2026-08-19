@@ -1,9 +1,117 @@
 <div class="rail">
   <h2 class="rail__title">Quellen</h2>
-  <div class="rail__empty">
-    <p class="rail__empty-title">Noch keine Quellen.</p>
-    <p class="rail__empty-body">
-      Der Upload von PDFs und Texten folgt in der nächsten Ausbaustufe.
-    </p>
+
+  <div class="rail__actions">
+    <label class="btn btn--ghost btn--block">
+      @if (uploading()) {
+        Wird hochgeladen …
+      } @else {
+        + Datei hochladen
+      }
+      <input
+        type="file"
+        accept=".pdf,.txt,application/pdf,text/plain"
+        [disabled]="uploading()"
+        (change)="onFileSelected($event)"
+      />
+    </label>
+
+    @if (!addingText()) {
+      <button type="button" class="btn btn--ghost btn--block" (click)="startAddText()">
+        + Text einfügen
+      </button>
+    }
   </div>
+
+  @if (addingText()) {
+    <form class="add-text-form" (ngSubmit)="submitText()">
+      <input
+        type="text"
+        placeholder="Titel"
+        [ngModel]="textTitle()"
+        (ngModelChange)="textTitle.set($event)"
+        name="textTitle"
+        autofocus
+      />
+      <textarea
+        placeholder="Text einfügen …"
+        rows="6"
+        [ngModel]="textContent()"
+        (ngModelChange)="textContent.set($event)"
+        name="textContent"
+      ></textarea>
+      <div class="add-text-form__actions">
+        <button
+          type="submit"
+          class="btn btn--primary"
+          [disabled]="!textTitle().trim() || !textContent().trim() || savingText()"
+        >
+          Hinzufügen
+        </button>
+        <button type="button" class="btn btn--ghost" (click)="cancelAddText()">
+          Abbrechen
+        </button>
+      </div>
+    </form>
+  }
+
+  @if (formError()) {
+    <p class="state state--error">{{ formError() }}</p>
+  }
+
+  @if (loading() && sources().length === 0) {
+    <p class="state">Quellen werden geladen …</p>
+  }
+
+  @if (error()) {
+    <p class="state state--error">{{ error() }}</p>
+  }
+
+  @if (!loading() && sources().length === 0 && !error()) {
+    <div class="rail__empty">
+      <p class="rail__empty-title">Noch keine Quellen.</p>
+      <p class="rail__empty-body">
+        Lade eine PDF oder Textdatei hoch, oder füge Text direkt ein.
+      </p>
+    </div>
+  }
+
+  @if (sources().length > 0) {
+    <ul class="source-list">
+      @for (source of sources(); track source.id) {
+        <li class="source-item" [class.source-item--active]="selectedId() === source.id">
+          <button type="button" class="source-item__main" (click)="select(source)">
+            <span class="source-item__type">{{ source.type === 'pdf' ? 'PDF' : 'TXT' }}</span>
+            <span class="source-item__title">{{ source.title }}</span>
+          </button>
+          <div class="source-item__footer">
+            <span class="source-item__meta">{{ source.charCount }} Zeichen</span>
+            @if (pendingDeleteId() === source.id) {
+              <span class="confirm-delete">
+                Löschen?
+                <button
+                  type="button"
+                  class="link-btn link-btn--danger"
+                  (click)="confirmDelete(source.id, $event)"
+                >
+                  Ja
+                </button>
+                <button type="button" class="link-btn" (click)="cancelDelete($event)">
+                  Nein
+                </button>
+              </span>
+            } @else {
+              <button
+                type="button"
+                class="link-btn link-btn--danger"
+                (click)="askDelete(source.id, $event)"
+              >
+                Löschen
+              </button>
+            }
+          </div>
+        </li>
+      }
+    </ul>
+  }
 </div>

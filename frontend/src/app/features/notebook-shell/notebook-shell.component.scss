@@ -79,6 +79,54 @@
   background-position: 0 60px;
 }
 
+.shell__workspace--reading {
+  align-items: flex-start;
+}
+
+.source-view {
+  width: 100%;
+  max-width: 720px;
+  margin: 0 auto;
+  background: var(--paper-raised);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  padding: var(--space-lg);
+}
+
+.source-view__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-md);
+  margin-bottom: var(--space-md);
+  padding-bottom: var(--space-md);
+  border-bottom: 1px solid var(--rule);
+}
+
+.source-view__kicker {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--ink-soft);
+  margin: 0 0 var(--space-xs);
+}
+
+.source-view__title {
+  font-size: 1.3rem;
+  overflow-wrap: anywhere;
+}
+
+.source-view__content {
+  white-space: pre-wrap;
+  word-break: break-word;
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  line-height: 1.7;
+  color: var(--ink);
+  margin: 0;
+}
+
 .workspace-placeholder {
   max-width: 40ch;
   text-align: center;

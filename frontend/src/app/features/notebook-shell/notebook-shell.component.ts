@@ -2,6 +2,7 @@ import { Component, OnInit, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { NotebooksService } from '../../core/notebooks.service';
+import { SourcesService } from '../../core/sources.service';
 import { Notebook } from '../../core/notebook.model';
 import { SourcesPanelComponent } from './sources-panel/sources-panel.component';
 import { StudioPanelComponent } from './studio-panel/studio-panel.component';
@@ -15,11 +16,13 @@ import { StudioPanelComponent } from './studio-panel/studio-panel.component';
 export class NotebookShellComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly notebooksService = inject(NotebooksService);
+  private readonly sourcesService = inject(SourcesService);
 
   readonly notebook = signal<Notebook | null>(null);
   readonly notFound = signal(false);
   readonly editingTitle = signal(false);
   readonly titleDraft = signal('');
+  readonly selectedSource = this.sourcesService.selected;
 
   async ngOnInit(): Promise<void> {
     const id = this.route.snapshot.paramMap.get('id');
@@ -52,5 +55,9 @@ export class NotebookShellComponent implements OnInit {
     await this.notebooksService.rename(current.id, title);
     this.notebook.set({ ...current, title });
     this.editingTitle.set(false);
+  }
+
+  closeSource(): void {
+    this.sourcesService.clearSelection();
   }
 }

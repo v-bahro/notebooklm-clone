@@ -21,17 +21,35 @@
 
     <div class="shell__body">
       <aside class="shell__rail shell__rail--left">
-        <app-sources-panel></app-sources-panel>
+        <app-sources-panel [notebookId]="nb.id"></app-sources-panel>
       </aside>
 
-      <main class="shell__workspace">
-        <div class="workspace-placeholder">
-          <p class="workspace-placeholder__title">Chat folgt in der nächsten Ausbaustufe.</p>
-          <p class="workspace-placeholder__body">
-            Sobald Quellen hochgeladen werden können, beantwortet Quellwerk Fragen
-            ausschließlich auf ihrer Basis – mit Zitat zur genauen Stelle.
-          </p>
-        </div>
+      <main class="shell__workspace" [class.shell__workspace--reading]="selectedSource()">
+        @if (selectedSource(); as src) {
+          <article class="source-view">
+            <header class="source-view__header">
+              <div>
+                <p class="source-view__kicker">
+                  {{ src.type === 'pdf' ? 'PDF' : 'Text' }} · {{ src.charCount }} Zeichen
+                </p>
+                <h2 class="source-view__title">{{ src.title }}</h2>
+              </div>
+              <button type="button" class="btn btn--ghost" (click)="closeSource()">
+                Schließen
+              </button>
+            </header>
+            <pre class="source-view__content">{{ src.content }}</pre>
+          </article>
+        } @else {
+          <div class="workspace-placeholder">
+            <p class="workspace-placeholder__title">Chat folgt in der nächsten Ausbaustufe.</p>
+            <p class="workspace-placeholder__body">
+              Sobald Fragen gestellt werden können, beantwortet Quellwerk sie
+              ausschließlich auf Basis deiner Quellen – mit Zitat zur genauen Stelle.
+              Klicke links auf eine Quelle, um ihren Text zu sehen.
+            </p>
+          </div>
+        }
       </main>
 
       <aside class="shell__rail shell__rail--right">

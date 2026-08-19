@@ -11,6 +11,27 @@
   margin-bottom: var(--space-md);
 }
 
+.rail__actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  margin-bottom: var(--space-md);
+
+  input[type='file'] {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+
+  label.btn:has(input:focus-visible) {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+}
+
 .rail__empty {
   border: 1px dashed var(--rule);
   border-radius: var(--radius);
@@ -26,4 +47,86 @@
   color: var(--ink-soft);
   font-size: 0.85rem;
   margin: 0;
+}
+
+.add-text-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  margin-bottom: var(--space-md);
+  padding: var(--space-sm);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  background: var(--paper-raised);
+
+  input,
+  textarea {
+    padding: 0.5rem 0.6rem;
+    border: 1px solid var(--rule);
+    border-radius: var(--radius-sm);
+    background: var(--paper);
+    resize: vertical;
+  }
+}
+
+.add-text-form__actions {
+  display: flex;
+  gap: var(--space-sm);
+}
+
+.source-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.source-item {
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-sm);
+  background: var(--paper-raised);
+  overflow: hidden;
+}
+
+.source-item--active {
+  border-color: var(--accent);
+}
+
+.source-item__main {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-xs);
+  width: 100%;
+  padding: var(--space-sm) var(--space-sm) var(--space-xs);
+  background: none;
+  border: none;
+  text-align: left;
+}
+
+.source-item__type {
+  flex-shrink: 0;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--accent);
+}
+
+.source-item__title {
+  font-size: 0.9rem;
+  overflow-wrap: anywhere;
+}
+
+.source-item__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-xs);
+  padding: 0 var(--space-sm) var(--space-sm);
+}
+
+.source-item__meta {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--ink-soft);
 }
