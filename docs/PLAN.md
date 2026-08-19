@@ -21,8 +21,9 @@ Deliverables laut Aufgabenstellung:
 | Storage | Extrahierter Text direkt in Postgres (kein Bucket) | Siehe `docs/DECISIONS.md` – Original-Datei wird nicht dauerhaft gebraucht, nur ihr Text |
 | Frontend-Hosting | Netlify | Vincents übliches Setup, Angular-Build direkt deploybar |
 | Backend-Hosting | Render (Docker-Deploy) | verlässlich, TLS/Proxy/Restarts managed, minimaler Ops-Aufwand während der zeitkritischen Testaufgabe |
-| LLM (später) | Claude API | für RAG-Chat, Summary-Generierung |
-| Embeddings (später) | OpenAI `text-embedding-3-small` | günstig, ausreichend gut |
+| LLM | Claude API (`claude-opus-5`) | für RAG-Chat, später Summary-Generierung |
+| Embeddings | OpenAI `text-embedding-3-small` | günstig, ausreichend gut |
+| Vektorindex | `pgvector` (Cosine-Distanz, Brute-Force ohne ANN-Index) | Datenmenge in dieser Aufgabe klein genug, dass ein Index keinen Mehrwert bringt |
 | TTS (später, Stretch) | OpenAI TTS / ElevenLabs | Audio Overview |
 
 Repo-Struktur: **ein Repo**, zwei Ordner (`/frontend`, `/backend`) – einfacher
@@ -77,10 +78,32 @@ für HR nachzuvollziehen als Nx-Monorepo oder zwei separate Repos.
   Dev-Server) durchgeklickt. Beide Production-Builds laufen fehlerfrei durch.
 - **Meilenstein erreicht:** Datei hochladen, sehen dass sie verarbeitet wurde.
 
-### Phase 3 – RAG-Chat
-- Chunking + Embeddings beim Upload
-- Vektorsuche (`pgvector`) + Claude-API-Integration
-- Chat-UI, Antworten ausschließlich aus Quellen, klickbare Zitate
+### Phase 3 – RAG-Chat ✅
+- [x] Chunking + Embeddings beim Upload
+- [x] Vektorsuche (`pgvector`) + Claude-API-Integration
+- [x] Chat-UI, Antworten ausschließlich aus Quellen, klickbare Zitate
+- **Umgesetzt:** Beim Speichern einer Quelle (Upload oder Text) chunkt
+  `IndexingService` den Inhalt (gleitendes Fenster, ~1000 Zeichen, 150 Zeichen
+  Überlappung, Wortgrenzen-bewusst) und embedded jeden Chunk über OpenAI
+  `text-embedding-3-small`; Embeddings landen als `vector(1536)`-Spalte auf
+  `chunks` (pgvector-Extension wird beim App-Start automatisch aktiviert,
+  siehe `VectorSchemaService`). `ChatService` embedded die Nutzerfrage,
+  holt per Cosine-Distanz die passendsten Chunks aus dem aktuellen Notebook,
+  baut daraus einen nummerierten Prompt und lässt `claude-opus-5` ausschließlich
+  auf dieser Basis antworten – mit `[n]`-Zitaten im Fließtext. Antworten und
+  Zitate (inkl. Zeichen-Offset im Quelltext) werden in einer `messages`-Tabelle
+  persistiert, sodass der Chatverlauf einen Reload übersteht. Frontend:
+  `ChatPanelComponent` ersetzt den Chat-Platzhalter im Arbeitsbereich,
+  `[n]`-Zitate sind klickbar und öffnen die zitierte Quelle mit exakt
+  markiertem Ausschnitt (`<mark>` über den gespeicherten Zeichen-Offset).
+  Fehlerfälle sind bewusst weich abgefangen: fehlt ein API-Key, bricht weder
+  der Quellen-Upload noch die App beim Start – der Chat antwortet stattdessen
+  mit einer verständlichen Fehlermeldung (beide SDK-Clients werden lazy
+  instanziiert, siehe `docs/DECISIONS.md`). End-to-end gegen echte OpenAI-/
+  Claude-APIs verifiziert: mehrteilige Quelle korrekt gechunkt, Retrieval über
+  mehrere Chunks/Quellen hinweg, Zitat-Highlight exakt auf den richtigen
+  Abschnitt begrenzt, Anfragen außerhalb der Quellen werden korrekt
+  zurückgewiesen statt halluziniert.
 
 ### Phase 4 – Stretch (später, wie besprochen)
 - Studio-Feature: One-Click Summary/Study Guide

@@ -45,6 +45,36 @@ auf dem `sources`-Eintrag in Postgres. Vorteil auch fürs Deployment: kein
 zusätzlicher Storage-Dienst nötig, funktioniert unverändert auf Render ohne
 persistentes Volume.
 
+## 2026-08 – RAG-Chat: zwei Provider (OpenAI Embeddings + Claude API), Modellwahl
+Bewusst bei zwei separaten Anbietern geblieben statt auf einen zu konsolidieren
+(z. B. beides über OpenAI), obwohl das einen zweiten API-Key bedeutet: Embeddings
+und Textgenerierung sind unterschiedliche Aufgaben mit unterschiedlichen
+Anforderungen, und `text-embedding-3-small` (OpenAI) ist für reine
+Vektorsuche günstig und ausreichend gut, während `claude-opus-5` für die
+eigentliche, quellentreue Antwortgenerierung eingesetzt wird – passend zur
+"Claude API Integration", die im ursprünglichen Tech-Stack (siehe oben)
+ohnehin vorgesehen war. Für eine Testaufgabe im Anthropic-Umfeld ist das
+zudem naheliegender als ein Ein-Provider-Setup.
+
+## 2026-08 – pgvector lokal aus Quellcode gebaut statt via Homebrew-Bottle
+Das Homebrew-Formula für `pgvector` liefert vorgebaute Bottles nur für
+`postgresql@17`/`@18`; dieses Projekt nutzt lokal bewusst `postgresql@16`
+(siehe README). Statt die Postgres-Version zu wechseln, wurde `pgvector`
+0.8.6 direkt mit `PG_CONFIG` von `postgresql@16` aus dem Quellcode gebaut
+und via `make install` in die bestehende Postgres-16-Installation
+eingebunden. Für Render (Backend-Hosting) ist das kein Thema, da Render für
+Postgres-Add-ons eigene, aktuelle Images mit pgvector-Unterstützung bereitstellt.
+
+## 2026-08 – API-Clients (OpenAI/Claude) lazy statt im Konstruktor instanziiert
+`EmbeddingsService` und `ChatService` legen ihren jeweiligen SDK-Client erst
+beim ersten tatsächlichen Aufruf an, nicht im NestJS-Konstruktor. Beide SDKs
+werfen sofort einen Fehler, wenn kein API-Key auffindbar ist – im Konstruktor
+hätte das die komplette App am Start gehindert, sobald `ChatModule`
+eingebunden ist, selbst wenn nur ein Key fehlt oder noch nicht gesetzt wurde.
+So bleiben Notebook-CRUD und Quellen-Upload immer nutzbar; nur der Chat (bzw.
+die Indexierung neuer Quellen) meldet einen klaren, abgefangenen Fehler statt
+die App lahmzulegen.
+
 ## 2026-08 – Font-Inlining im Production-Build deaktiviert
 Angular versucht im Production-Build standardmäßig, Google-Fonts-CSS zur
 Build-Zeit zu inlinen (externer Netzwerk-Call). Deaktiviert
