@@ -3,6 +3,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { ChatModule } from './chat/chat.module';
 import { NotebooksModule } from './notebooks/notebooks.module';
 import { SourcesModule } from './sources/sources.module';
 
@@ -26,6 +27,7 @@ import { SourcesModule } from './sources/sources.module';
     }),
     NotebooksModule,
     SourcesModule,
+    ChatModule,
   ],
   controllers: [AppController],
   providers: [AppService],

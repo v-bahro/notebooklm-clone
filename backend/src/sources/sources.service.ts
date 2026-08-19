@@ -1,11 +1,13 @@
 import {
   BadRequestException,
   Injectable,
+  Logger,
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PDFParse } from 'pdf-parse';
 import { Repository } from 'typeorm';
+import { IndexingService } from '../embeddings/indexing.service';
 import { Notebook } from '../notebooks/notebook.entity';
 import { CreateTextSourceDto } from './dto/create-text-source.dto';
 import { Source } from './source.entity';
@@ -15,11 +17,14 @@ const SUPPORTED_TEXT_MIME_TYPES = new Set(['text/plain']);
 
 @Injectable()
 export class SourcesService {
+  private readonly logger = new Logger(SourcesService.name);
+
   constructor(
     @InjectRepository(Source)
     private readonly sources: Repository<Source>,
     @InjectRepository(Notebook)
     private readonly notebooks: Repository<Notebook>,
+    private readonly indexingService: IndexingService,
   ) {}
 
   private async ensureNotebookExists(notebookId: string): Promise<void> {
@@ -112,7 +117,18 @@ export class SourcesService {
       content: trimmedContent,
       charCount: trimmedContent.length,
     });
-    return this.sources.save(source);
+    const saved = await this.sources.save(source);
+
+    try {
+      await this.indexingService.indexSource(saved);
+    } catch (err) {
+      this.logger.warn(
+        `Indexierung für Quelle ${saved.id} fehlgeschlagen – Chat-Suche wird sie vorerst nicht finden.`,
+        err instanceof Error ? err.stack : err,
+      );
+    }
+
+    return saved;
   }
 
   private async extractPdfText(buffer: Buffer): Promise<string> {
