@@ -1,11 +1,40 @@
 <div class="rail">
   <h2 class="rail__title">Studio</h2>
-  <ul class="planned-list">
-    @for (item of plannedOutputs; track item.label) {
-      <li class="planned-item">
-        <span class="planned-item__label">{{ item.label }}</span>
-        <span class="planned-item__note">{{ item.note }}</span>
-      </li>
+
+  <div class="studio-card">
+    <h3 class="studio-card__title">Zusammenfassung</h3>
+
+    @if (summary(); as text) {
+      <p class="studio-card__text">{{ text }}</p>
+      <button
+        type="button"
+        class="btn btn--ghost btn--block"
+        (click)="generateSummary()"
+        [disabled]="loading()"
+      >
+        {{ loading() ? 'Erstelle …' : 'Neu erstellen' }}
+      </button>
+    } @else {
+      <p class="studio-card__note">
+        Fasst alle Quellen dieses Notebooks in wenigen Sätzen zusammen.
+      </p>
+      <button
+        type="button"
+        class="btn btn--primary btn--block"
+        (click)="generateSummary()"
+        [disabled]="loading()"
+      >
+        {{ loading() ? 'Erstelle …' : 'Zusammenfassung erstellen' }}
+      </button>
     }
-  </ul>
+
+    @if (error(); as err) {
+      <p class="studio-card__error">{{ err }}</p>
+    }
+  </div>
+
+  <div class="studio-card studio-card--muted">
+    <h3 class="studio-card__title">Audio Overview</h3>
+    <p class="studio-card__note">geplant für eine spätere Phase</p>
+  </div>
 </div>

@@ -6,6 +6,7 @@ import { AppService } from './app.service';
 import { ChatModule } from './chat/chat.module';
 import { NotebooksModule } from './notebooks/notebooks.module';
 import { SourcesModule } from './sources/sources.module';
+import { StudioModule } from './studio/studio.module';
 
 @Module({
   imports: [
@@ -38,6 +39,7 @@ import { SourcesModule } from './sources/sources.module';
     NotebooksModule,
     SourcesModule,
     ChatModule,
+    StudioModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -105,10 +105,15 @@ für HR nachzuvollziehen als Nx-Monorepo oder zwei separate Repos.
   Abschnitt begrenzt, Anfragen außerhalb der Quellen werden korrekt
   zurückgewiesen statt halluziniert.
 
-### Phase 4 – Stretch (später, wie besprochen)
-- Studio-Feature: One-Click Summary/Study Guide
-- Audio Overview (Skript-Generierung + Zwei-Stimmen-TTS)
-- Mehrsprachigkeit, falls Zeit bleibt
+### Phase 4 – Stretch ✅ (teilweise, bewusst begrenzt)
+- [x] Studio-Feature: One-Click Summary – ein Claude-Call über alle Quellen
+      eines Notebooks, neues `StudioModule` (`POST /notebooks/:id/summary`),
+      gleiches Resilienz-Muster wie der Chat (lazy Client, Fallback-Text bei
+      Fehlern/fehlenden Quellen, kein API-Crash beim Start)
+- [ ] Audio Overview (Skript-Generierung + Zwei-Stimmen-TTS) – bewusst nicht
+      umgesetzt: TTS-Integration ist unverhältnismäßig viel Aufwand für den
+      Video-Demo-Nutzen, im Studio-Panel weiterhin als Roadmap-Punkt markiert
+- [ ] Mehrsprachigkeit – nicht umgesetzt, kein Bedarf für die Abgabe
 
 ### Phase 5 – Deploy & Abgabe 🚧
 - [x] Deployment-Konfiguration vorbereitet (render.yaml, netlify.toml)

@@ -13,13 +13,17 @@ Quellstelle zurückverweisen.
 ```
 
 ## Stand
-Phase 1–3 abgeschlossen: Notebook-Übersicht (anlegen/umbenennen/löschen),
-3-Spalten-Notebook-Ansicht (Quellen | Arbeitsbereich | Studio) mit eigenem
-Design-System, Quellen hochladen (PDF/.txt) oder als Text einfügen, RAG-Chat
-mit klickbaren Zitaten (Antworten ausschließlich aus den eigenen Quellen,
-mit exakt markiertem Ausschnitt in der Quelle). Backend läuft gegen echtes
+Phase 1–3 und 5 abgeschlossen, Phase 4 teilweise: Notebook-Übersicht
+(anlegen/umbenennen/löschen), 3-Spalten-Notebook-Ansicht (Quellen |
+Arbeitsbereich | Studio) mit eigenem Design-System, Quellen hochladen
+(PDF/.txt) oder als Text einfügen, RAG-Chat mit klickbaren Zitaten
+(Antworten ausschließlich aus den eigenen Quellen, mit exakt markiertem
+Ausschnitt in der Quelle), Ein-Klick-Zusammenfassung im Studio-Panel. Live
+deployed (Netlify + Render, siehe unten). Backend läuft gegen echtes
 Postgres inkl. `pgvector`, End-to-end manuell sowie gegen die echten OpenAI-/
-Claude-APIs verifiziert. Details und weitere Phasen: siehe `docs/PLAN.md`.
+Claude-APIs verifiziert. Audio Overview (Zwei-Stimmen-TTS) bewusst nicht
+umgesetzt – siehe `docs/DECISIONS.md`. Details und weitere Phasen: siehe
+`docs/PLAN.md`.
 
 ## Lokal starten
 
