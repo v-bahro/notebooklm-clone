@@ -12,6 +12,7 @@ export class SourcesService {
   private readonly _loading = signal(false);
   private readonly _error = signal<string | null>(null);
   private readonly _selectedId = signal<string | null>(null);
+  private readonly _highlightRange = signal<{ start: number; end: number } | null>(null);
 
   readonly sources = computed(() => this._sources());
   readonly loading = computed(() => this._loading());
@@ -19,6 +20,7 @@ export class SourcesService {
   readonly selected = computed(
     () => this._sources().find((s) => s.id === this._selectedId()) ?? null,
   );
+  readonly highlightRange = computed(() => this._highlightRange());
 
   private baseUrl(notebookId: string): string {
     return `${environment.apiBaseUrl}/notebooks/${notebookId}/sources`;
@@ -28,6 +30,7 @@ export class SourcesService {
     this._loading.set(true);
     this._error.set(null);
     this._selectedId.set(null);
+    this._highlightRange.set(null);
     try {
       const sources = await firstValueFrom(
         this.http.get<Source[]>(this.baseUrl(notebookId)),
@@ -73,11 +76,18 @@ export class SourcesService {
   }
 
   select(id: string): void {
+    this._highlightRange.set(null);
     this._selectedId.update((current) => (current === id ? null : id));
+  }
+
+  selectWithHighlight(sourceId: string, start: number, end: number): void {
+    this._selectedId.set(sourceId);
+    this._highlightRange.set({ start, end });
   }
 
   clearSelection(): void {
     this._selectedId.set(null);
+    this._highlightRange.set(null);
   }
 
   private extractMessage(err: unknown, fallback: string): string {

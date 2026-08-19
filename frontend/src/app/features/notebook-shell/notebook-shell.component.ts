@@ -4,12 +4,25 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { NotebooksService } from '../../core/notebooks.service';
 import { SourcesService } from '../../core/sources.service';
 import { Notebook } from '../../core/notebook.model';
+import { Source } from '../../core/source.model';
+import { ChatPanelComponent } from './chat-panel/chat-panel.component';
 import { SourcesPanelComponent } from './sources-panel/sources-panel.component';
 import { StudioPanelComponent } from './studio-panel/studio-panel.component';
 
+interface SourceContentSegment {
+  text: string;
+  highlighted: boolean;
+}
+
 @Component({
   selector: 'app-notebook-shell',
-  imports: [RouterLink, FormsModule, SourcesPanelComponent, StudioPanelComponent],
+  imports: [
+    RouterLink,
+    FormsModule,
+    SourcesPanelComponent,
+    StudioPanelComponent,
+    ChatPanelComponent,
+  ],
   templateUrl: './notebook-shell.component.html',
   styleUrl: './notebook-shell.component.scss',
 })
@@ -23,6 +36,7 @@ export class NotebookShellComponent implements OnInit {
   readonly editingTitle = signal(false);
   readonly titleDraft = signal('');
   readonly selectedSource = this.sourcesService.selected;
+  readonly highlightRange = this.sourcesService.highlightRange;
 
   async ngOnInit(): Promise<void> {
     const id = this.route.snapshot.paramMap.get('id');
@@ -59,5 +73,22 @@ export class NotebookShellComponent implements OnInit {
 
   closeSource(): void {
     this.sourcesService.clearSelection();
+  }
+
+  sourceContentSegments(source: Source): SourceContentSegment[] {
+    const range = this.highlightRange();
+    if (
+      !range ||
+      range.start < 0 ||
+      range.end > source.content.length ||
+      range.start >= range.end
+    ) {
+      return [{ text: source.content, highlighted: false }];
+    }
+    return [
+      { text: source.content.slice(0, range.start), highlighted: false },
+      { text: source.content.slice(range.start, range.end), highlighted: true },
+      { text: source.content.slice(range.end), highlighted: false },
+    ];
   }
 }

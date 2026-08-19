@@ -1,0 +1,119 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 720px;
+  height: 100%;
+  margin: 0 auto;
+  padding: var(--space-lg) var(--space-lg) var(--space-md);
+}
+
+.chat {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+}
+
+.chat__history {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  padding-bottom: var(--space-md);
+}
+
+.chat__empty {
+  margin: auto;
+  text-align: center;
+  max-width: 40ch;
+}
+
+.chat__empty-title {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  margin: 0 0 var(--space-xs);
+}
+
+.chat__empty-body {
+  color: var(--ink-soft);
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+.message {
+  background: var(--paper-raised);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  padding: var(--space-sm) var(--space-md);
+  max-width: 85%;
+}
+
+.message--user {
+  align-self: flex-end;
+  background: var(--accent-soft);
+  border-color: transparent;
+}
+
+.message--assistant {
+  align-self: flex-start;
+}
+
+.message--pending {
+  color: var(--ink-soft);
+  font-style: italic;
+}
+
+.message__role {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--ink-soft);
+  margin-bottom: var(--space-xs);
+}
+
+.message__content {
+  margin: 0;
+  white-space: pre-wrap;
+  line-height: 1.6;
+}
+
+.citation {
+  background: var(--highlight-soft);
+  color: var(--accent);
+  border: none;
+  border-radius: 3px;
+  padding: 0 0.2rem;
+  font-family: var(--font-mono);
+  font-size: 0.85em;
+  cursor: pointer;
+  text-decoration: underline;
+
+  &:hover {
+    background: var(--highlight);
+    color: #fff;
+  }
+}
+
+.chat__form {
+  display: flex;
+  gap: var(--space-sm);
+  flex-shrink: 0;
+
+  input {
+    flex: 1;
+    padding: 0.6rem 0.8rem;
+    border: 1px solid var(--rule);
+    border-radius: var(--radius-sm);
+    background: var(--paper-raised);
+
+    &:disabled {
+      background: var(--paper);
+      color: var(--ink-soft);
+    }
+  }
+}

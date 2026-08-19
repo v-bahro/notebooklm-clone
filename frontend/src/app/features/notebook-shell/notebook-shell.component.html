@@ -24,7 +24,11 @@
         <app-sources-panel [notebookId]="nb.id"></app-sources-panel>
       </aside>
 
-      <main class="shell__workspace" [class.shell__workspace--reading]="selectedSource()">
+      <main
+        class="shell__workspace"
+        [class.shell__workspace--reading]="selectedSource()"
+        [class.shell__workspace--chat]="!selectedSource()"
+      >
         @if (selectedSource(); as src) {
           <article class="source-view">
             <header class="source-view__header">
@@ -38,17 +42,10 @@
                 Schließen
               </button>
             </header>
-            <pre class="source-view__content">{{ src.content }}</pre>
+            <pre class="source-view__content">@for (seg of sourceContentSegments(src); track $index) {@if (seg.highlighted) {<mark>{{ seg.text }}</mark>} @else {{{ seg.text }}}}</pre>
           </article>
         } @else {
-          <div class="workspace-placeholder">
-            <p class="workspace-placeholder__title">Chat folgt in der nächsten Ausbaustufe.</p>
-            <p class="workspace-placeholder__body">
-              Sobald Fragen gestellt werden können, beantwortet Quellwerk sie
-              ausschließlich auf Basis deiner Quellen – mit Zitat zur genauen Stelle.
-              Klicke links auf eine Quelle, um ihren Text zu sehen.
-            </p>
-          </div>
+          <app-chat-panel [notebookId]="nb.id"></app-chat-panel>
         }
       </main>
 

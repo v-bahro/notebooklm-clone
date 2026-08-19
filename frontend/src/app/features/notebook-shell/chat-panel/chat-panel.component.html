@@ -1,0 +1,69 @@
+<div class="chat">
+  <div class="chat__history">
+    @if (loadingHistory() && messages().length === 0) {
+      <p class="state">Verlauf wird geladen …</p>
+    }
+
+    @if (!loadingHistory() && messages().length === 0) {
+      <div class="chat__empty">
+        <p class="chat__empty-title">Frag Quellwerk etwas zu deinen Quellen.</p>
+        <p class="chat__empty-body">
+          Antworten stützen sich ausschließlich auf die hochgeladenen Quellen –
+          mit Zitat zur genauen Stelle.
+        </p>
+      </div>
+    }
+
+    @for (message of messages(); track message.id) {
+      <div
+        class="message"
+        [class.message--user]="message.role === 'user'"
+        [class.message--assistant]="message.role === 'assistant'"
+      >
+        <span class="message__role">{{ message.role === 'user' ? 'Du' : 'Quellwerk' }}</span>
+        <p class="message__content">
+          @for (segment of segments(message); track $index) {
+            @if (segment.citation) {
+              <button
+                type="button"
+                class="citation"
+                (click)="viewCitation(segment.citation)"
+              >{{ segment.text }}</button>
+            } @else {
+              {{ segment.text }}
+            }
+          }
+        </p>
+      </div>
+    }
+
+    @if (sending()) {
+      <div class="message message--assistant message--pending">
+        <span class="message__role">Quellwerk</span>
+        <p class="message__content">Antwort wird erstellt …</p>
+      </div>
+    }
+  </div>
+
+  @if (error()) {
+    <p class="state state--error">{{ error() }}</p>
+  }
+
+  <form class="chat__form" (ngSubmit)="submit()">
+    <input
+      type="text"
+      [placeholder]="sources().length === 0 ? 'Lade zuerst eine Quelle hoch …' : 'Frage stellen …'"
+      [disabled]="sources().length === 0 || sending()"
+      [ngModel]="question()"
+      (ngModelChange)="question.set($event)"
+      name="question"
+    />
+    <button
+      type="submit"
+      class="btn btn--primary"
+      [disabled]="!question().trim() || sending() || sources().length === 0"
+    >
+      Senden
+    </button>
+  </form>
+</div>
