@@ -75,6 +75,34 @@ So bleiben Notebook-CRUD und Quellen-Upload immer nutzbar; nur der Chat (bzw.
 die Indexierung neuer Quellen) meldet einen klaren, abgefangenen Fehler statt
 die App lahmzulegen.
 
+## 2026-08 – Render-Deploy: natives Node-Web-Service statt Docker
+Ursprünglich war ein Docker-Deploy auf Render vorgesehen (siehe Tech-Stack-
+Tabelle). In der Umsetzung darauf verzichtet: Das Backend hat keine nativen
+Abhängigkeiten (auch `pdf-parse` ist reines JS/WASM), die einen eigenen
+Container rechtfertigen würden. Render kann Node-Projekte direkt bauen und
+starten (`npm install && npm run build` / `npm run start:prod`) – ein
+Dockerfile hätte hier nur zusätzliche Wartungsfläche ohne Mehrwert bedeutet.
+Passt zur bereits getroffenen Entscheidung "Render statt VPS": minimaler
+Ops-Aufwand vor voller Kontrolle. `render.yaml` (Blueprint) definiert DB und
+Web-Service deklarativ, damit Vincent nicht jedes Feld einzeln im Dashboard
+ausfüllen muss.
+
+## 2026-08 – Postgres-Verbindung: `DATABASE_URL` zusätzlich zu einzelnen DB_*-Vars
+Render (wie die meisten Managed-Postgres-Anbieter) stellt eine einzelne
+Connection-URL bereit statt einzelner Host/User/Passwort-Variablen.
+`AppModule` nutzt jetzt `DATABASE_URL`, wenn gesetzt (mit `ssl:
+{rejectUnauthorized: false}`, da Render selbstsignierte Zertifikate
+verwendet), und fällt sonst auf die einzelnen `DB_*`-Variablen zurück –
+lokale Entwicklung bleibt dadurch unverändert.
+
+## 2026-08 – Render Free-Tier: bewusst akzeptierte Einschränkungen
+Sowohl die kostenlose Postgres-Datenbank als auch der kostenlose Web-Service
+auf Render haben Einschränkungen (DB läuft nach 30 Tagen ab, Web-Service geht
+bei Inaktivität in den Schlaf und braucht beim ersten Request danach ein paar
+Sekunden zum Aufwachen). Für die Abgabe dieser Testaufgabe ist das
+akzeptabel – ein bezahlter Plan wäre eine bewusste Entscheidung von Vincent,
+falls das Projekt über die Bewerbung hinaus länger laufen soll.
+
 ## 2026-08 – Font-Inlining im Production-Build deaktiviert
 Angular versucht im Production-Build standardmäßig, Google-Fonts-CSS zur
 Build-Zeit zu inlinen (externer Netzwerk-Call). Deaktiviert

@@ -20,7 +20,7 @@ Deliverables laut Aufgabenstellung:
 | Datenbank | PostgreSQL + `pgvector`-Extension | Relationale Daten + Vektorsuche in einem System |
 | Storage | Extrahierter Text direkt in Postgres (kein Bucket) | Siehe `docs/DECISIONS.md` – Original-Datei wird nicht dauerhaft gebraucht, nur ihr Text |
 | Frontend-Hosting | Netlify | Vincents übliches Setup, Angular-Build direkt deploybar |
-| Backend-Hosting | Render (Docker-Deploy) | verlässlich, TLS/Proxy/Restarts managed, minimaler Ops-Aufwand während der zeitkritischen Testaufgabe |
+| Backend-Hosting | Render (natives Node-Web-Service, kein Docker) | verlässlich, TLS/Proxy/Restarts managed, minimaler Ops-Aufwand – siehe `docs/DECISIONS.md` für die Docker-Abweichung |
 | LLM | Claude API (`claude-opus-5`) | für RAG-Chat, später Summary-Generierung |
 | Embeddings | OpenAI `text-embedding-3-small` | günstig, ausreichend gut |
 | Vektorindex | `pgvector` (Cosine-Distanz, Brute-Force ohne ANN-Index) | Datenmenge in dieser Aufgabe klein genug, dass ein Index keinen Mehrwert bringt |
@@ -110,11 +110,27 @@ für HR nachzuvollziehen als Nx-Monorepo oder zwei separate Repos.
 - Audio Overview (Skript-Generierung + Zwei-Stimmen-TTS)
 - Mehrsprachigkeit, falls Zeit bleibt
 
-### Phase 5 – Deploy & Abgabe
-- Frontend auf Netlify, Backend als Docker-Image auf Render
-- End-to-End-Test
-- README finalisieren (Screenshots, Setup-Anleitung, Live-Link)
-- Loom-Video aufnehmen
+### Phase 5 – Deploy & Abgabe 🚧
+- [x] Deployment-Konfiguration vorbereitet (render.yaml, netlify.toml)
+- [ ] Render-Account/Netlify-Account einrichten (Vincent) und Blueprint/Site
+      tatsächlich deployen
+- [ ] End-to-End-Test gegen die Live-URLs
+- [ ] README finalisieren (Live-Link)
+- [ ] Loom-Video aufnehmen
+- **Umgesetzt (Vorbereitung):** `render.yaml` (Blueprint) definiert Postgres-DB
+  (`plan: free`, pgvector-fähig ab Postgres 13, kein manueller Schritt nötig –
+  die App legt die Extension beim Start selbst an) + Backend als natives
+  Node-Web-Service (kein Docker mehr, siehe `docs/DECISIONS.md`), DB-Connection
+  per `DATABASE_URL` aus `fromDatabase`. `netlify.toml` baut das Frontend
+  (`ng build --configuration production`) und liefert `dist/frontend/browser`
+  mit SPA-Redirect-Regel aus. `environment.production.ts` zeigt vorab auf die
+  aus dem Service-Namen vorhergesagte Render-URL
+  (`https://quellwerk-backend.onrender.com`) – falls Render einen anderen
+  Namen vergibt, muss das nach dem ersten Deploy angepasst werden.
+  `VectorSchemaService` fängt jetzt Fehler beim pgvector-Setup ab, damit ein
+  Problem dort nie den kompletten App-Start blockiert. Account-Anlage bei
+  Netlify/Render sowie das eigentliche Deployment sind manuelle Schritte, die
+  nur Vincent ausführen kann.
 
 ## Entscheidungen
 - Backend-Hosting: **Render** statt eigener Hetzner-VPS. Begründung: verlässlich

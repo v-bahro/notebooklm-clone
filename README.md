@@ -55,8 +55,30 @@ npm start
 Läuft auf `http://localhost:4200` und erwartet das Backend auf
 `http://localhost:3000` (siehe `src/environments/environment.ts`).
 
-## Deployment (geplant, Phase 5)
-- Frontend: Netlify
-- Backend: Render (Docker)
+## Deployment
+
+- **Backend → Render**, per Blueprint (`render.yaml` im Repo-Root): legt eine
+  Postgres-Datenbank (inkl. `pgvector`) und den Backend-Service automatisch an.
+  1. Auf [render.com](https://render.com) einloggen/registrieren, GitHub-Repo
+     verbinden.
+  2. **New → Blueprint**, dieses Repo auswählen – Render erkennt `render.yaml`
+     und schlägt DB + Web-Service vor.
+  3. Bei den abgefragten Secrets `OPENAI_API_KEY` und `ANTHROPIC_API_KEY`
+     eintragen (aus der lokalen `backend/.env`).
+  4. Nach dem ersten Deploy: die zugewiesene Backend-URL notieren (Standard
+     wäre `https://quellwerk-backend.onrender.com`, kann abweichen, falls der
+     Name schon vergeben ist).
+- **Frontend → Netlify**, per `netlify.toml` im Repo-Root:
+  1. Auf [netlify.com](https://netlify.com) einloggen/registrieren, **Add new
+     site → Import an existing project**, dieses Repo auswählen – Netlify
+     erkennt `netlify.toml` (Build-Command, Publish-Dir, SPA-Redirect)
+     automatisch.
+  2. Nach dem Deploy die zugewiesene Netlify-URL notieren.
+- **Beide URLs verbinden** (nach dem ersten Deploy beider Seiten):
+  - Falls die Render-Backend-URL von der Vorhersage abweicht:
+    `frontend/src/environments/environment.production.ts` anpassen und neu
+    deployen (Netlify baut bei jedem Push automatisch neu).
+  - Im Render-Dashboard bei `quellwerk-backend` → Environment die Variable
+    `FRONTEND_ORIGIN` auf die echte Netlify-URL setzen (für CORS).
 
 Details und Begründung: `docs/ARCHITECTURE.md`, `docs/DECISIONS.md`.

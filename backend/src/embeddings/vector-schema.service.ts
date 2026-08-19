@@ -11,10 +11,19 @@ export class VectorSchemaService implements OnModuleInit {
   constructor(@InjectDataSource() private readonly dataSource: DataSource) {}
 
   async onModuleInit(): Promise<void> {
-    await this.dataSource.query('CREATE EXTENSION IF NOT EXISTS vector');
-    await this.dataSource.query(
-      `ALTER TABLE chunks ADD COLUMN IF NOT EXISTS embedding vector(${EMBEDDING_DIMENSIONS})`,
-    );
-    this.logger.log('pgvector-Schema bereit (chunks.embedding).');
+    try {
+      await this.dataSource.query('CREATE EXTENSION IF NOT EXISTS vector');
+      await this.dataSource.query(
+        `ALTER TABLE chunks ADD COLUMN IF NOT EXISTS embedding vector(${EMBEDDING_DIMENSIONS})`,
+      );
+      this.logger.log('pgvector-Schema bereit (chunks.embedding).');
+    } catch (err) {
+      // Darf den App-Start nicht verhindern: Notebooks/Quellen funktionieren
+      // auch ohne Vektorsuche, nur die Chat-Suche wäre dann leer.
+      this.logger.warn(
+        'pgvector-Setup fehlgeschlagen – Chat-Suche findet vorerst keine Quellen.',
+        err instanceof Error ? err.stack : err,
+      );
+    }
   }
 }

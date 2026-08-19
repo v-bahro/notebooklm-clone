@@ -1,5 +1,7 @@
 export const environment = {
   production: true,
-  // Wird beim Deployment auf die echte Render-URL des Backends gesetzt.
-  apiBaseUrl: 'https://REPLACE-WITH-RENDER-BACKEND-URL',
+  // Vorhergesagte Render-URL basierend auf dem Service-Namen in render.yaml
+  // ("quellwerk-backend"). Falls Render einen abweichenden Namen vergibt
+  // (z. B. weil der Name schon belegt ist), hier die echte URL eintragen.
+  apiBaseUrl: 'https://quellwerk-backend.onrender.com',
 };
