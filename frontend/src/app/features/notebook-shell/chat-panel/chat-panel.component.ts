@@ -1,11 +1,14 @@
 import {
   Component,
+  ElementRef,
   Input,
   OnChanges,
   OnInit,
   SimpleChanges,
+  effect,
   inject,
   signal,
+  viewChild,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
@@ -35,6 +38,22 @@ export class ChatPanelComponent implements OnInit, OnChanges {
   readonly sources = this.sourcesService.sources;
 
   readonly question = signal('');
+
+  private readonly historyRef = viewChild<ElementRef<HTMLDivElement>>('history');
+
+  constructor() {
+    // Scrollt den Verlauf ans Ende, sobald eine neue Nachricht dazukommt –
+    // sowohl die eigene (optimistisch) als auch die Antwort.
+    effect(() => {
+      this.messages();
+      const el = this.historyRef()?.nativeElement;
+      if (el) {
+        setTimeout(() => {
+          el.scrollTop = el.scrollHeight;
+        }, 0);
+      }
+    });
+  }
 
   ngOnInit(): void {
     this.chatService.loadHistory(this.notebookId);

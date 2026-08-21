@@ -40,6 +40,47 @@ export class NotebookShellComponent implements OnInit {
   readonly selectedSource = this.sourcesService.selected;
   readonly highlightRange = this.sourcesService.highlightRange;
 
+  private static readonly RAIL_WIDTH_KEY = 'quellwerk:rightRailWidth';
+  private static readonly RAIL_WIDTH_MIN = 200;
+  private static readonly RAIL_WIDTH_MAX = 520;
+
+  readonly rightRailWidth = signal(this.loadStoredRailWidth());
+  private resizeStartX = 0;
+  private resizeStartWidth = 0;
+
+  private loadStoredRailWidth(): number {
+    const stored = Number(localStorage.getItem(NotebookShellComponent.RAIL_WIDTH_KEY));
+    if (!stored || Number.isNaN(stored)) return 260;
+    return this.clampRailWidth(stored);
+  }
+
+  private clampRailWidth(width: number): number {
+    return Math.min(
+      NotebookShellComponent.RAIL_WIDTH_MAX,
+      Math.max(NotebookShellComponent.RAIL_WIDTH_MIN, width),
+    );
+  }
+
+  startResize(event: MouseEvent): void {
+    event.preventDefault();
+    this.resizeStartX = event.clientX;
+    this.resizeStartWidth = this.rightRailWidth();
+    document.addEventListener('mousemove', this.onResize);
+    document.addEventListener('mouseup', this.stopResize);
+  }
+
+  private readonly onResize = (event: MouseEvent): void => {
+    // Rechte Spalte: nach links ziehen (kleineres clientX) macht sie breiter.
+    const delta = this.resizeStartX - event.clientX;
+    this.rightRailWidth.set(this.clampRailWidth(this.resizeStartWidth + delta));
+  };
+
+  private readonly stopResize = (): void => {
+    document.removeEventListener('mousemove', this.onResize);
+    document.removeEventListener('mouseup', this.stopResize);
+    localStorage.setItem(NotebookShellComponent.RAIL_WIDTH_KEY, String(this.rightRailWidth()));
+  };
+
   constructor() {
     // Springt beim Öffnen eines Zitats zur markierten Stelle im Quelltext,
     // statt dass man selbst danach suchen muss.

@@ -24,7 +24,7 @@
       <div class="shell__header-side" aria-hidden="true"></div>
     </header>
 
-    <div class="shell__body">
+    <div class="shell__body" [style.--right-rail-width.px]="rightRailWidth()">
       <aside class="shell__rail shell__rail--left">
         <app-sources-panel [notebookId]="nb.id"></app-sources-panel>
       </aside>
@@ -57,6 +57,13 @@
       </main>
 
       <aside class="shell__rail shell__rail--right">
+        <div
+          class="shell__resizer"
+          (mousedown)="startResize($event)"
+          role="separator"
+          aria-orientation="vertical"
+          aria-label="Studio-Bereich breiter oder schmaler ziehen"
+        ></div>
         <app-studio-panel [notebookId]="nb.id"></app-studio-panel>
       </aside>
     </div>

@@ -1,5 +1,5 @@
 <div class="chat">
-  <div class="chat__history">
+  <div class="chat__history" #history>
     @if (loadingHistory() && messages().length === 0) {
       <p class="state">Verlauf wird geladen …</p>
     }
