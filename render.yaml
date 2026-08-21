@@ -19,7 +19,7 @@ services:
           name: quellwerk-db
           property: connectionString
       - key: FRONTEND_ORIGIN
-        value: https://notebooklm-cloned.netlify.app
+        value: https://quellwerk.netlify.app
       - key: OPENAI_API_KEY
         sync: false
       - key: ANTHROPIC_API_KEY

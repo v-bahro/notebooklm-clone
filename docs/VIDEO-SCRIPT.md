@@ -5,7 +5,7 @@ max. 10 Minuten, Fokus auf dem Teil, der am meisten Ingenieurstiefe zeigt
 (RAG-Pipeline), nicht auf jedem einzelnen Klick.
 
 **Zwei Optionen für die Aufnahme-Umgebung:** entweder die Live-URLs
-(`https://notebooklm-cloned.netlify.app`) – zeigt, dass es wirklich deployed
+(`https://quellwerk.netlify.app`) – zeigt, dass es wirklich deployed
 ist, aber der Backend-Coldstart kann die erste Chat-Antwort ein paar
 Sekunden verzögern – oder lokal (`npm run start:dev` + `npm start`), dafür
 kurz erwähnen, dass es auch live läuft und den Link im Video-Titel/Text
