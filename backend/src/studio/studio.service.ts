@@ -16,6 +16,11 @@ const NO_SOURCES_SUMMARY =
 const SUMMARY_UNAVAILABLE =
   'Die Zusammenfassung ist gerade nicht verfügbar. Bitte versuche es in Kürze erneut.';
 
+export interface SummaryResult {
+  summary: string;
+  generatedAt: Date | null;
+}
+
 @Injectable()
 export class StudioService {
   private readonly logger = new Logger(StudioService.name);
@@ -38,9 +43,22 @@ export class StudioService {
     return this.anthropicClient;
   }
 
-  async summarize(notebookId: string): Promise<{ summary: string }> {
-    const exists = await this.notebooks.exists({ where: { id: notebookId } });
-    if (!exists) {
+  async getSummary(notebookId: string): Promise<SummaryResult> {
+    const notebook = await this.notebooks.findOneBy({ id: notebookId });
+    if (!notebook) {
+      throw new NotFoundException(
+        `Notebook ${notebookId} wurde nicht gefunden.`,
+      );
+    }
+    return {
+      summary: notebook.summary ?? '',
+      generatedAt: notebook.summaryGeneratedAt,
+    };
+  }
+
+  async summarize(notebookId: string): Promise<SummaryResult> {
+    const notebook = await this.notebooks.findOneBy({ id: notebookId });
+    if (!notebook) {
       throw new NotFoundException(
         `Notebook ${notebookId} wurde nicht gefunden.`,
       );
@@ -51,18 +69,21 @@ export class StudioService {
       order: { createdAt: 'ASC' },
     });
     if (sources.length === 0) {
-      return { summary: NO_SOURCES_SUMMARY };
+      return { summary: NO_SOURCES_SUMMARY, generatedAt: null };
     }
 
     try {
       const summary = await this.generateSummary(sources);
-      return { summary };
+      notebook.summary = summary;
+      notebook.summaryGeneratedAt = new Date();
+      await this.notebooks.save(notebook);
+      return { summary, generatedAt: notebook.summaryGeneratedAt };
     } catch (err) {
       this.logger.error(
         `Zusammenfassung für Notebook ${notebookId} fehlgeschlagen.`,
         err instanceof Error ? err.stack : err,
       );
-      return { summary: SUMMARY_UNAVAILABLE };
+      return { summary: SUMMARY_UNAVAILABLE, generatedAt: null };
     }
   }
 
@@ -73,8 +94,9 @@ export class StudioService {
 
     const systemPrompt = [
       'Du fasst die folgenden Quellen eines Notebooks für jemanden zusammen, der sie noch nicht kennt.',
-      'Nenne die wichtigsten Themen und Kernaussagen in 4-6 prägnanten Sätzen.',
-      'Nutze ausschließlich die gegebenen Quellen, erfinde nichts hinzu. Antworte auf Deutsch, ohne Einleitung.',
+      'Antworte als 3-5 kurze Stichpunkte, jeder auf einer eigenen Zeile, beginnend mit "- ".',
+      'Jeder Stichpunkt nennt einen zentralen Punkt einer oder mehrerer Quellen – kurz und konkret, kein Fließtext.',
+      'Nutze ausschließlich die gegebenen Quellen, erfinde nichts hinzu. Antworte auf Deutsch, ohne Einleitung oder Überschrift.',
       '',
       sourcesBlock,
     ].join('\n');

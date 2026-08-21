@@ -39,9 +39,36 @@
 
 .studio-card__text {
   font-size: 0.85rem;
-  line-height: 1.5;
+  line-height: 1.6;
   margin: 0;
   white-space: pre-wrap;
+}
+
+.studio-card__list {
+  margin: 0;
+  padding-left: 1.1rem;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+
+  li {
+    padding-left: 0.15rem;
+  }
+}
+
+.studio-card__row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+
+  .btn {
+    flex: 1 1 auto;
+    min-width: 0;
+    font-size: 0.8rem;
+    padding: 0.45rem 0.75rem;
+  }
 }
 
 .studio-card__error {

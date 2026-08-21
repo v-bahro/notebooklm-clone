@@ -71,7 +71,13 @@
 
 .add-text-form__actions {
   display: flex;
-  gap: var(--space-sm);
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+
+  .btn {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
 }
 
 .source-list {

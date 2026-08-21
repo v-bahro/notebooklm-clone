@@ -5,18 +5,31 @@
     <h3 class="studio-card__title">Zusammenfassung</h3>
 
     @if (summary(); as text) {
-      <p class="studio-card__text">{{ text }}</p>
-      <button
-        type="button"
-        class="btn btn--ghost btn--block"
-        (click)="generateSummary()"
-        [disabled]="loading()"
-      >
-        {{ loading() ? 'Erstelle …' : 'Neu erstellen' }}
-      </button>
+      @if (summaryPoints(); as points) {
+        <ul class="studio-card__list">
+          @for (point of points; track $index) {
+            <li>{{ point }}</li>
+          }
+        </ul>
+      } @else {
+        <p class="studio-card__text">{{ text }}</p>
+      }
+      <div class="studio-card__row">
+        <button
+          type="button"
+          class="btn btn--ghost"
+          (click)="generateSummary()"
+          [disabled]="loading()"
+        >
+          {{ loading() ? 'Erstelle …' : 'Neu erstellen' }}
+        </button>
+        <button type="button" class="btn btn--ghost" (click)="copySummary()">
+          {{ copied() ? 'Kopiert ✓' : 'Kopieren' }}
+        </button>
+      </div>
     } @else {
       <p class="studio-card__note">
-        Fasst alle Quellen dieses Notebooks in wenigen Sätzen zusammen.
+        Fasst alle Quellen dieses Notebooks in wenigen Stichpunkten zusammen.
       </p>
       <button
         type="button"
