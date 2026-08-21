@@ -11,6 +11,7 @@
             (ngModelChange)="titleDraft.set($event)"
             (blur)="submitTitle()"
             (keydown.enter)="submitTitle()"
+            autocomplete="off"
             autofocus
           />
         } @else {

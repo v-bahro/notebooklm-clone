@@ -21,19 +21,11 @@
         [class.message--assistant]="message.role === 'assistant'"
       >
         <span class="message__role">{{ message.role === 'user' ? 'Du' : 'Quellwerk' }}</span>
-        <p class="message__content">
-          @for (segment of segments(message); track $index) {
-            @if (segment.citation) {
-              <button
-                type="button"
-                class="citation"
-                (click)="viewCitation(segment.citation)"
-              >{{ segment.text }}</button>
-            } @else {
-              {{ segment.text }}
-            }
-          }
-        </p>
+        <div
+          class="message__content"
+          [innerHTML]="renderMessage(message)"
+          (click)="onContentClick($event, message)"
+        ></div>
       </div>
     }
 
@@ -57,6 +49,7 @@
       [ngModel]="question()"
       (ngModelChange)="question.set($event)"
       name="question"
+      autocomplete="off"
     />
     <button
       type="submit"

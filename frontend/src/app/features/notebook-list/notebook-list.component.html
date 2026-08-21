@@ -19,6 +19,7 @@
         [ngModel]="newTitle()"
         (ngModelChange)="newTitle.set($event)"
         name="newTitle"
+        autocomplete="off"
         autofocus
       />
       <button type="submit" class="btn btn--primary" [disabled]="!newTitle().trim() || creating()">
@@ -61,6 +62,7 @@
                 (blur)="submitEdit(notebook.id)"
                 (keydown.enter)="submitEdit(notebook.id)"
                 (keydown.escape)="cancelEdit()"
+                autocomplete="off"
                 autofocus
               />
             } @else {

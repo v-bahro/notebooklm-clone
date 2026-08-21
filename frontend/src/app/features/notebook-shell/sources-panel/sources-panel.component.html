@@ -36,6 +36,7 @@
         [ngModel]="textTitle()"
         (ngModelChange)="textTitle.set($event)"
         name="textTitle"
+        autocomplete="off"
         autofocus
       />
       <textarea
@@ -44,6 +45,7 @@
         [ngModel]="textContent()"
         (ngModelChange)="textContent.set($event)"
         name="textContent"
+        autocomplete="off"
       ></textarea>
       <div class="add-text-form__actions">
         <button

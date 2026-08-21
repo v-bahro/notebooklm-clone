@@ -77,9 +77,61 @@
 }
 
 .message__content {
-  margin: 0;
-  white-space: pre-wrap;
   line-height: 1.6;
+
+  > :first-child {
+    margin-top: 0;
+  }
+
+  > :last-child {
+    margin-bottom: 0;
+  }
+
+  p {
+    margin: 0 0 var(--space-sm);
+  }
+
+  ul,
+  ol {
+    margin: 0 0 var(--space-sm);
+    padding-left: 1.3em;
+  }
+
+  li {
+    margin-bottom: 0.2em;
+  }
+
+  strong {
+    font-weight: 600;
+  }
+
+  code {
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+    padding: 0 0.25em;
+    font-family: var(--font-mono);
+    font-size: 0.9em;
+  }
+
+  pre {
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    border-radius: var(--radius-sm);
+    padding: var(--space-sm);
+    overflow-x: auto;
+    margin: 0 0 var(--space-sm);
+
+    code {
+      background: none;
+      border: none;
+      padding: 0;
+    }
+  }
+
+  a {
+    color: var(--accent);
+  }
 }
 
 .citation {
