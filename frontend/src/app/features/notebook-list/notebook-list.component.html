@@ -2,11 +2,11 @@
   <header class="page__header">
     <div>
       <h1>Quellwerk</h1>
-      <p class="page__tagline">Deine Quellen, gesammelt an einem Ort – befragbar, mit Beleg.</p>
+      <p class="page__tagline">Die Quelle deines Wissens</p>
     </div>
     @if (!isCreating()) {
       <button type="button" class="btn btn--primary" (click)="startCreate()">
-        + Neues Notebook
+        + Neues Notizbuch
       </button>
     }
   </header>
@@ -33,14 +33,14 @@
   }
 
   @if (loading() && notebooks().length === 0) {
-    <p class="state">Notebooks werden geladen …</p>
+    <p class="state">Notizbücher werden geladen …</p>
   }
 
   @if (!loading() && notebooks().length === 0 && !error()) {
     <div class="empty-state">
-      <p class="empty-state__title">Noch kein Notebook angelegt.</p>
+      <p class="empty-state__title">Noch kein Notizbuch angelegt.</p>
       <p class="empty-state__body">
-        Ein Notebook sammelt deine Quellen und beantwortet Fragen ausschließlich
+        Ein Notizbuch sammelt deine Quellen und beantwortet Fragen ausschließlich
         auf ihrer Basis. Leg dein erstes an, um loszulegen.
       </p>
     </div>

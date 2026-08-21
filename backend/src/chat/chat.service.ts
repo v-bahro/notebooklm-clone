@@ -16,7 +16,7 @@ const MAX_ANSWER_TOKENS = 1500;
 const RETRIEVAL_LIMIT = 6;
 
 const NO_SOURCES_ANSWER =
-  'In diesem Notebook sind noch keine durchsuchbaren Quellen vorhanden. Lade zuerst eine Quelle hoch, um Fragen dazu stellen zu können.';
+  'In diesem Notizbuch sind noch keine durchsuchbaren Quellen vorhanden. Lade zuerst eine Quelle hoch, um Fragen dazu stellen zu können.';
 
 const CHAT_UNAVAILABLE_ANSWER =
   'Der Chat ist gerade nicht erreichbar. Bitte versuche es in Kürze erneut.';
@@ -114,7 +114,7 @@ export class ChatService {
       .join('\n\n');
 
     const systemPrompt = [
-      'Du beantwortest Fragen ausschließlich auf Basis der folgenden nummerierten Ausschnitte aus den Quellen dieses Notebooks.',
+      'Du beantwortest Fragen ausschließlich auf Basis der folgenden nummerierten Ausschnitte aus den Quellen dieses Notizbuchs.',
       'Zitiere jede Aussage mit der passenden Nummer in eckigen Klammern, z. B. [1] oder [2][3].',
       'Wenn die Ausschnitte die Frage nicht beantworten, sage das offen. Erfinde nichts und nutze kein Wissen außerhalb der Ausschnitte.',
       'Antworte auf Deutsch, prägnant und ohne unnötige Einleitung.',
@@ -171,7 +171,7 @@ export class ChatService {
     const exists = await this.notebooks.exists({ where: { id: notebookId } });
     if (!exists) {
       throw new NotFoundException(
-        `Notebook ${notebookId} wurde nicht gefunden.`,
+        `Notizbuch ${notebookId} wurde nicht gefunden.`,
       );
     }
   }

@@ -7,7 +7,7 @@ export const routes: Routes = [
   {
     path: 'notebooks/:id',
     component: NotebookShellComponent,
-    title: 'Notebook – Quellwerk',
+    title: 'Notizbuch – Quellwerk',
   },
   { path: '**', redirectTo: '' },
 ];

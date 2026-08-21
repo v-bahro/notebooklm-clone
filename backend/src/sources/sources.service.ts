@@ -31,7 +31,7 @@ export class SourcesService {
     const exists = await this.notebooks.exists({ where: { id: notebookId } });
     if (!exists) {
       throw new NotFoundException(
-        `Notebook ${notebookId} wurde nicht gefunden.`,
+        `Notizbuch ${notebookId} wurde nicht gefunden.`,
       );
     }
   }

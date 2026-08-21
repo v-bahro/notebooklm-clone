@@ -11,7 +11,7 @@ const MAX_SUMMARY_TOKENS = 800;
 const MAX_CHARS_PER_SOURCE = 6000;
 
 const NO_SOURCES_SUMMARY =
-  'Noch keine Quellen in diesem Notebook. Lade zuerst etwas hoch, um eine Zusammenfassung zu erhalten.';
+  'Noch keine Quellen in diesem Notizbuch. Lade zuerst etwas hoch, um eine Zusammenfassung zu erhalten.';
 
 const SUMMARY_UNAVAILABLE =
   'Die Zusammenfassung ist gerade nicht verfügbar. Bitte versuche es in Kürze erneut.';
@@ -47,7 +47,7 @@ export class StudioService {
     const notebook = await this.notebooks.findOneBy({ id: notebookId });
     if (!notebook) {
       throw new NotFoundException(
-        `Notebook ${notebookId} wurde nicht gefunden.`,
+        `Notizbuch ${notebookId} wurde nicht gefunden.`,
       );
     }
     return {
@@ -60,7 +60,7 @@ export class StudioService {
     const notebook = await this.notebooks.findOneBy({ id: notebookId });
     if (!notebook) {
       throw new NotFoundException(
-        `Notebook ${notebookId} wurde nicht gefunden.`,
+        `Notizbuch ${notebookId} wurde nicht gefunden.`,
       );
     }
 
@@ -93,7 +93,7 @@ export class StudioService {
       .join('\n\n');
 
     const systemPrompt = [
-      'Du fasst die folgenden Quellen eines Notebooks für jemanden zusammen, der sie noch nicht kennt.',
+      'Du fasst die folgenden Quellen eines Notizbuchs für jemanden zusammen, der sie noch nicht kennt.',
       'Antworte als 3-5 kurze Stichpunkte, jeder auf einer eigenen Zeile, beginnend mit "- ".',
       'Jeder Stichpunkt nennt einen zentralen Punkt einer oder mehrerer Quellen – kurz und konkret, kein Fließtext.',
       'Nutze ausschließlich die gegebenen Quellen, erfinde nichts hinzu. Antworte auf Deutsch, ohne Einleitung oder Überschrift.',

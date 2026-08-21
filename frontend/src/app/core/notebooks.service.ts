@@ -27,7 +27,7 @@ export class NotebooksService {
       this._notebooks.set(notebooks);
     } catch {
       this._error.set(
-        'Notebooks konnten nicht geladen werden. Läuft das Backend?',
+        'Notizbücher konnten nicht geladen werden. Läuft das Backend?',
       );
     } finally {
       this._loading.set(false);

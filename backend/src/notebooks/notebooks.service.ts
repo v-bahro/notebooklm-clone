@@ -19,7 +19,7 @@ export class NotebooksService {
   async findOne(id: string): Promise<Notebook> {
     const notebook = await this.notebooks.findOne({ where: { id } });
     if (!notebook) {
-      throw new NotFoundException(`Notebook ${id} wurde nicht gefunden.`);
+      throw new NotFoundException(`Notizbuch ${id} wurde nicht gefunden.`);
     }
     return notebook;
   }
@@ -40,7 +40,7 @@ export class NotebooksService {
   async remove(id: string): Promise<void> {
     const result = await this.notebooks.delete(id);
     if (result.affected === 0) {
-      throw new NotFoundException(`Notebook ${id} wurde nicht gefunden.`);
+      throw new NotFoundException(`Notizbuch ${id} wurde nicht gefunden.`);
     }
   }
 }
