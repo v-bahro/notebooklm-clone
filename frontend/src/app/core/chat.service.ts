@@ -18,6 +18,10 @@ export class ChatService {
   private readonly _sending = signal(false);
   private readonly _error = signal<string | null>(null);
 
+  // Verhindert, dass die Antwort auf eine Frage aus Notizbuch A im Chat von
+  // Notizbuch B landet, falls der Request noch läuft, während man wechselt.
+  private activeNotebookId: string | null = null;
+
   readonly messages = computed(() => this._messages());
   readonly loadingHistory = computed(() => this._loadingHistory());
   readonly sending = computed(() => this._sending());
@@ -28,17 +32,24 @@ export class ChatService {
   }
 
   async loadHistory(notebookId: string): Promise<void> {
+    this.activeNotebookId = notebookId;
     this._loadingHistory.set(true);
     this._error.set(null);
     try {
       const messages = await firstValueFrom(
         this.http.get<ChatMessage[]>(this.baseUrl(notebookId)),
       );
-      this._messages.set(messages);
+      if (this.activeNotebookId === notebookId) {
+        this._messages.set(messages);
+      }
     } catch {
-      this._error.set('Chatverlauf konnte nicht geladen werden.');
+      if (this.activeNotebookId === notebookId) {
+        this._error.set('Chatverlauf konnte nicht geladen werden.');
+      }
     } finally {
-      this._loadingHistory.set(false);
+      if (this.activeNotebookId === notebookId) {
+        this._loadingHistory.set(false);
+      }
     }
   }
 
@@ -49,11 +60,22 @@ export class ChatService {
       const { userMessage, assistantMessage } = await firstValueFrom(
         this.http.post<AskResponse>(this.baseUrl(notebookId), { question }),
       );
-      this._messages.update((all) => [...all, userMessage, assistantMessage]);
+      if (this.activeNotebookId === notebookId) {
+        this._messages.update((all) => [...all, userMessage, assistantMessage]);
+      }
     } catch {
-      this._error.set('Nachricht konnte nicht gesendet werden.');
+      if (this.activeNotebookId === notebookId) {
+        this._error.set('Nachricht konnte nicht gesendet werden.');
+      }
     } finally {
-      this._sending.set(false);
+      if (this.activeNotebookId === notebookId) {
+        this._sending.set(false);
+      }
     }
+  }
+
+  reset(): void {
+    this._messages.set([]);
+    this._error.set(null);
   }
 }

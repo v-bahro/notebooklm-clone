@@ -1,4 +1,13 @@
-import { Component, Input, OnInit, computed, inject, signal } from '@angular/core';
+import {
+  Component,
+  Input,
+  OnChanges,
+  OnInit,
+  SimpleChanges,
+  computed,
+  inject,
+  signal,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { SourcesService } from '../../../core/sources.service';
 import { Source } from '../../../core/source.model';
@@ -9,7 +18,7 @@ import { Source } from '../../../core/source.model';
   templateUrl: './sources-panel.component.html',
   styleUrl: './sources-panel.component.scss',
 })
-export class SourcesPanelComponent implements OnInit {
+export class SourcesPanelComponent implements OnInit, OnChanges {
   @Input({ required: true }) notebookId!: string;
 
   private readonly sourcesService = inject(SourcesService);
@@ -32,6 +41,12 @@ export class SourcesPanelComponent implements OnInit {
 
   ngOnInit(): void {
     this.sourcesService.loadAll(this.notebookId);
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['notebookId'] && !changes['notebookId'].firstChange) {
+      this.sourcesService.loadAll(this.notebookId);
+    }
   }
 
   async onFileSelected(event: Event): Promise<void> {

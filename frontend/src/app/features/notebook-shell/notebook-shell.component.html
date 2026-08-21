@@ -28,28 +28,26 @@
         <app-sources-panel [notebookId]="nb.id"></app-sources-panel>
       </aside>
 
-      <main
-        class="shell__workspace"
-        [class.shell__workspace--reading]="selectedSource()"
-        [class.shell__workspace--chat]="!selectedSource()"
-      >
+      <main class="shell__workspace">
+        <app-chat-panel [notebookId]="nb.id"></app-chat-panel>
+
         @if (selectedSource(); as src) {
-          <article class="source-view">
-            <header class="source-view__header">
-              <div>
-                <p class="source-view__kicker">
-                  {{ src.type === 'pdf' ? 'PDF' : 'Text' }} · {{ src.charCount }} Zeichen
-                </p>
-                <h2 class="source-view__title">{{ src.title }}</h2>
-              </div>
-              <button type="button" class="btn btn--ghost" (click)="closeSource()">
-                Schließen
-              </button>
-            </header>
-            <pre class="source-view__content">@for (seg of sourceContentSegments(src); track $index) {@if (seg.highlighted) {<mark>{{ seg.text }}</mark>} @else {{{ seg.text }}}}</pre>
-          </article>
-        } @else {
-          <app-chat-panel [notebookId]="nb.id"></app-chat-panel>
+          <div class="source-overlay">
+            <article class="source-view">
+              <header class="source-view__header">
+                <div>
+                  <p class="source-view__kicker">
+                    {{ src.type === 'pdf' ? 'PDF' : 'Text' }} · {{ src.charCount }} Zeichen
+                  </p>
+                  <h2 class="source-view__title">{{ src.title }}</h2>
+                </div>
+                <button type="button" class="btn btn--ghost" (click)="closeSource()">
+                  Schließen
+                </button>
+              </header>
+              <pre class="source-view__content">@for (seg of sourceContentSegments(src); track $index) {@if (seg.highlighted) {<mark>{{ seg.text }}</mark>} @else {{{ seg.text }}}}</pre>
+            </article>
+          </div>
         }
       </main>
 

@@ -1,4 +1,12 @@
-import { Component, Input, OnInit, inject, signal } from '@angular/core';
+import {
+  Component,
+  Input,
+  OnChanges,
+  OnInit,
+  SimpleChanges,
+  inject,
+  signal,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ChatService } from '../../../core/chat.service';
 import { SourcesService } from '../../../core/sources.service';
@@ -15,7 +23,7 @@ interface ContentSegment {
   templateUrl: './chat-panel.component.html',
   styleUrl: './chat-panel.component.scss',
 })
-export class ChatPanelComponent implements OnInit {
+export class ChatPanelComponent implements OnInit, OnChanges {
   @Input({ required: true }) notebookId!: string;
 
   private readonly chatService = inject(ChatService);
@@ -31,6 +39,13 @@ export class ChatPanelComponent implements OnInit {
 
   ngOnInit(): void {
     this.chatService.loadHistory(this.notebookId);
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['notebookId'] && !changes['notebookId'].firstChange) {
+      this.chatService.reset();
+      this.chatService.loadHistory(this.notebookId);
+    }
   }
 
   async submit(): Promise<void> {

@@ -1,4 +1,5 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, DestroyRef, OnInit, effect, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { NotebooksService } from '../../core/notebooks.service';
@@ -30,6 +31,7 @@ export class NotebookShellComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly notebooksService = inject(NotebooksService);
   private readonly sourcesService = inject(SourcesService);
+  private readonly destroyRef = inject(DestroyRef);
 
   readonly notebook = signal<Notebook | null>(null);
   readonly notFound = signal(false);
@@ -38,16 +40,45 @@ export class NotebookShellComponent implements OnInit {
   readonly selectedSource = this.sourcesService.selected;
   readonly highlightRange = this.sourcesService.highlightRange;
 
-  async ngOnInit(): Promise<void> {
-    const id = this.route.snapshot.paramMap.get('id');
-    if (!id) {
-      this.notFound.set(true);
-      return;
-    }
+  constructor() {
+    // Springt beim Öffnen eines Zitats zur markierten Stelle im Quelltext,
+    // statt dass man selbst danach suchen muss.
+    effect(() => {
+      if (this.highlightRange() && this.selectedSource()) {
+        setTimeout(() => {
+          document
+            .querySelector('.source-view__content mark')
+            ?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }, 0);
+      }
+    });
+  }
+
+  ngOnInit(): void {
+    // route.paramMap statt route.snapshot: Angulars Router nutzt dieselbe
+    // Komponenten-Instanz weiter, wenn man von einem Notizbuch direkt zu
+    // einem anderen navigiert (gleiche Route, nur die :id ändert sich) –
+    // ngOnInit feuert dann nicht erneut. Ohne das reaktive paramMap-
+    // Abonnement blieben Titel, Quellen und Chat-Verlauf des vorherigen
+    // Notizbuchs stehen.
+    this.route.paramMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((params) => {
+      const id = params.get('id');
+      if (!id) {
+        this.notFound.set(true);
+        return;
+      }
+      this.loadNotebook(id);
+    });
+  }
+
+  private async loadNotebook(id: string): Promise<void> {
+    this.notFound.set(false);
+    this.sourcesService.clearSelection();
     try {
       const notebook = await this.notebooksService.getOne(id);
       this.notebook.set(notebook);
     } catch {
+      this.notebook.set(null);
       this.notFound.set(true);
     }
   }

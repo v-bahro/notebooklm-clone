@@ -88,12 +88,24 @@
 }
 
 .shell__workspace {
-  overflow-y: auto;
+  position: relative;
   min-height: 0;
+  overflow: hidden;
+}
+
+// Liegt als eigenständige Ebene über dem Chat, statt ihn im DOM zu ersetzen –
+// so bleiben Chat-Verlauf und Scroll-Position erhalten, wenn man eine Quelle
+// öffnet und wieder schließt (wirkt wie ein Overlay, nicht wie ein Seitenwechsel).
+.source-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  overflow-y: auto;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
   padding: var(--space-lg);
+  background: var(--paper);
 
   // Signatur-Element: dezente Lineatur wie liniertes Papier
   background-image: repeating-linear-gradient(
@@ -104,17 +116,6 @@
     var(--rule) 28px
   );
   background-position: 0 60px;
-}
-
-.shell__workspace--reading {
-  align-items: flex-start;
-}
-
-.shell__workspace--chat {
-  align-items: stretch;
-  justify-content: stretch;
-  padding: 0;
-  overflow: hidden;
 }
 
 .source-view {
@@ -187,7 +188,7 @@
     border-bottom: 1px solid var(--rule);
   }
 
-  .shell__workspace--chat {
+  .shell__workspace {
     min-height: 480px;
   }
 }
