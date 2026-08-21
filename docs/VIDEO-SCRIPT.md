@@ -14,7 +14,7 @@ bevor du aufnimmst, damit der Cold-Start nicht mitten im Video passiert.
 
 ---
 
-## 0. Intro (~20–30 Sek.)
+## 0. Intro (~30–40 Sek.)
 
 - Wer du bist, worum es geht: "NotebookLM-Klon für die everlast-Testaufgabe"
 - Ein Satz Stack: "Angular-Frontend, NestJS-Backend, Postgres mit pgvector
@@ -22,6 +22,14 @@ bevor du aufnimmst, damit der Cold-Start nicht mitten im Video passiert.
 - Ein Satz Scope: "Kern-Feature ist der Chat mit den eigenen Quellen –
   Antworten ausschließlich aus den Quellen, mit exaktem Zitat zurück zur
   Textstelle"
+- **Vorgehen kurz benennen** (die Aufgabe fragt explizit danach): phasenweise
+  vorgegangen – erst Grundgerüst und Layout, dann Quellen-Upload, dann die
+  RAG-Chat-Pipeline als Kernstück, zuletzt Deployment und Politur. Jede
+  Phase mit eigenen, nachvollziehbaren Commits (im Repo sichtbar).
+- **KI-Einsatz offen ansprechen, nicht verstecken:** *"Ich habe dabei mit
+  Claude Code gearbeitet – Architekturentscheidungen und Reviews lagen bei
+  mir, die Umsetzung im Detail zusammen mit dem Tool."* Das ist in der
+  Einladungsmail ausdrücklich erwünscht, kein Grund, es kleinzureden.
 
 ## 1. Notebook-Übersicht + anlegen (~30–40 Sek.)
 
@@ -118,7 +126,7 @@ dort automatisch) oder die Diagramme aus dem Screen teilen.
 
 | Abschnitt | Dauer |
 |---|---|
-| Intro | 0:20–0:30 |
+| Intro (inkl. Vorgehen + KI-Einsatz) | 0:30–0:40 |
 | Notebook-Übersicht | 0:30–0:40 |
 | Quellen hochladen | 0:45–1:00 |
 | **RAG-Chat (Kern)** | **2:00–2:30** |
@@ -126,7 +134,7 @@ dort automatisch) oder die Diagramme aus dem Screen teilen.
 | Architektur | 2:00–2:30 |
 | Live-Deployment | 0:20–0:30 |
 | Abschluss | 0:20–0:30 |
-| **Gesamt** | **~7–8:30 Min.** |
+| **Gesamt** | **~7:30–9 Min.** |
 
 Puffer bis zur 10-Minuten-Grenze für Versprecher/Nachfragen einplanen.
 
