@@ -56,15 +56,36 @@ export class ChatService {
   async ask(notebookId: string, question: string): Promise<void> {
     this._sending.set(true);
     this._error.set(null);
+
+    // Zeigt die eigene Nachricht sofort an, statt erst wenn die Antwort da
+    // ist – sonst wirkt es, als wäre die Nachricht beim Absenden verschwunden.
+    const optimisticId = `temp-${crypto.randomUUID()}`;
+    const optimisticMessage: ChatMessage = {
+      id: optimisticId,
+      notebookId,
+      role: 'user',
+      content: question,
+      citations: null,
+      createdAt: new Date().toISOString(),
+    };
+    if (this.activeNotebookId === notebookId) {
+      this._messages.update((all) => [...all, optimisticMessage]);
+    }
+
     try {
       const { userMessage, assistantMessage } = await firstValueFrom(
         this.http.post<AskResponse>(this.baseUrl(notebookId), { question }),
       );
       if (this.activeNotebookId === notebookId) {
-        this._messages.update((all) => [...all, userMessage, assistantMessage]);
+        this._messages.update((all) => [
+          ...all.filter((m) => m.id !== optimisticId),
+          userMessage,
+          assistantMessage,
+        ]);
       }
     } catch {
       if (this.activeNotebookId === notebookId) {
+        this._messages.update((all) => all.filter((m) => m.id !== optimisticId));
         this._error.set('Nachricht konnte nicht gesendet werden.');
       }
     } finally {
