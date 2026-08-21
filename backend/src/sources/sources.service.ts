@@ -10,6 +10,7 @@ import { Repository } from 'typeorm';
 import { IndexingService } from '../embeddings/indexing.service';
 import { Notebook } from '../notebooks/notebook.entity';
 import { CreateTextSourceDto } from './dto/create-text-source.dto';
+import { UpdateSourceDto } from './dto/update-source.dto';
 import { Source } from './source.entity';
 
 const SUPPORTED_PDF_MIME_TYPES = new Set(['application/pdf']);
@@ -89,6 +90,16 @@ export class SourcesService {
   ): Promise<Source> {
     await this.ensureNotebookExists(notebookId);
     return this.save(notebookId, dto.title.trim(), 'text', dto.content);
+  }
+
+  async update(
+    notebookId: string,
+    id: string,
+    dto: UpdateSourceDto,
+  ): Promise<Source> {
+    const source = await this.findOne(notebookId, id);
+    source.includedInChat = dto.includedInChat;
+    return this.sources.save(source);
   }
 
   async remove(notebookId: string, id: string): Promise<void> {

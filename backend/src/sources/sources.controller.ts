@@ -3,6 +3,7 @@ import {
   Delete,
   Get,
   Param,
+  Patch,
   Post,
   Body,
   UploadedFile,
@@ -10,6 +11,7 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { CreateTextSourceDto } from './dto/create-text-source.dto';
+import { UpdateSourceDto } from './dto/update-source.dto';
 import { SourcesService } from './sources.service';
 
 const MAX_UPLOAD_BYTES = 20 * 1024 * 1024;
@@ -45,6 +47,15 @@ export class SourcesController {
     @Body() dto: CreateTextSourceDto,
   ) {
     return this.sourcesService.createFromText(notebookId, dto);
+  }
+
+  @Patch(':id')
+  update(
+    @Param('notebookId') notebookId: string,
+    @Param('id') id: string,
+    @Body() dto: UpdateSourceDto,
+  ) {
+    return this.sourcesService.update(notebookId, id, dto);
   }
 
   @Delete(':id')

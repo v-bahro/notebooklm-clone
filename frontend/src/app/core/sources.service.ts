@@ -67,6 +67,29 @@ export class SourcesService {
     }
   }
 
+  async setIncludedInChat(
+    notebookId: string,
+    id: string,
+    includedInChat: boolean,
+  ): Promise<void> {
+    const previous = this._sources();
+    this._sources.update((all) =>
+      all.map((s) => (s.id === id ? { ...s, includedInChat } : s)),
+    );
+    try {
+      await firstValueFrom(
+        this.http.patch<Source>(`${this.baseUrl(notebookId)}/${id}`, {
+          includedInChat,
+        }),
+      );
+    } catch (err) {
+      this._sources.set(previous);
+      throw new Error(
+        this.extractMessage(err, 'Änderung konnte nicht gespeichert werden.'),
+      );
+    }
+  }
+
   async remove(notebookId: string, id: string): Promise<void> {
     await firstValueFrom(this.http.delete<void>(`${this.baseUrl(notebookId)}/${id}`));
     this._sources.update((all) => all.filter((s) => s.id !== id));

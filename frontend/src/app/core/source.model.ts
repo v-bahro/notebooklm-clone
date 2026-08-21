@@ -7,5 +7,6 @@ export interface Source {
   type: SourceType;
   content: string;
   charCount: number;
+  includedInChat: boolean;
   createdAt: string;
 }

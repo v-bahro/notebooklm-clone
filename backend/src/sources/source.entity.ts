@@ -36,6 +36,9 @@ export class Source {
   @Column({ name: 'char_count', type: 'int' })
   charCount: number;
 
+  @Column({ name: 'included_in_chat', type: 'boolean', default: true })
+  includedInChat: boolean;
+
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
 }

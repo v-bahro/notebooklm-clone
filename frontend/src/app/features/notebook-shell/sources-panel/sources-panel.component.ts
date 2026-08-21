@@ -21,6 +21,7 @@ export class SourcesPanelComponent implements OnInit {
 
   readonly addingText = signal(false);
   readonly uploading = signal(false);
+  readonly uploadProgress = signal<{ done: number; total: number } | null>(null);
   readonly formError = signal<string | null>(null);
 
   readonly textTitle = signal('');
@@ -35,18 +36,27 @@ export class SourcesPanelComponent implements OnInit {
 
   async onFileSelected(event: Event): Promise<void> {
     const input = event.target as HTMLInputElement;
-    const file = input.files?.[0];
+    const files = Array.from(input.files ?? []);
     input.value = '';
-    if (!file) return;
+    if (files.length === 0) return;
 
     this.uploading.set(true);
     this.formError.set(null);
-    try {
-      await this.sourcesService.uploadFile(this.notebookId, file);
-    } catch (err) {
-      this.formError.set(err instanceof Error ? err.message : 'Upload fehlgeschlagen.');
-    } finally {
-      this.uploading.set(false);
+    const failed: string[] = [];
+
+    for (let i = 0; i < files.length; i++) {
+      this.uploadProgress.set({ done: i, total: files.length });
+      try {
+        await this.sourcesService.uploadFile(this.notebookId, files[i]);
+      } catch (err) {
+        failed.push(files[i].name);
+      }
+    }
+
+    this.uploadProgress.set(null);
+    this.uploading.set(false);
+    if (failed.length > 0) {
+      this.formError.set(`Fehlgeschlagen: ${failed.join(', ')}`);
     }
   }
 
@@ -96,5 +106,17 @@ export class SourcesPanelComponent implements OnInit {
     event.stopPropagation();
     await this.sourcesService.remove(this.notebookId, id);
     this.pendingDeleteId.set(null);
+  }
+
+  async toggleIncluded(source: Source, event: Event): Promise<void> {
+    event.stopPropagation();
+    const checked = (event.target as HTMLInputElement).checked;
+    try {
+      await this.sourcesService.setIncludedInChat(this.notebookId, source.id, checked);
+    } catch (err) {
+      this.formError.set(
+        err instanceof Error ? err.message : 'Änderung konnte nicht gespeichert werden.',
+      );
+    }
   }
 }

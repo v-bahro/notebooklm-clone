@@ -100,12 +100,30 @@
   border-color: var(--accent);
 }
 
+.source-item--excluded {
+  opacity: 0.55;
+}
+
+.source-item__row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  padding: var(--space-sm) var(--space-sm) 0;
+}
+
+.source-item__checkbox {
+  flex-shrink: 0;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+
 .source-item__main {
   display: flex;
   align-items: baseline;
   gap: var(--space-xs);
-  width: 100%;
-  padding: var(--space-sm) var(--space-sm) var(--space-xs);
+  flex: 1;
+  min-width: 0;
+  padding: 0 0 var(--space-xs);
   background: none;
   border: none;
   text-align: left;

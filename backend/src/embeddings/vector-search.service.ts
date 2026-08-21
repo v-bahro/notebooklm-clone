@@ -33,6 +33,7 @@ export class VectorSearchService {
        FROM chunks c
        JOIN sources s ON s.id = c.source_id
        WHERE c.notebook_id = $2 AND c.embedding IS NOT NULL
+             AND s.included_in_chat = true
        ORDER BY c.embedding <=> $1::vector
        LIMIT $3`,
       [vectorLiteral, notebookId, limit],

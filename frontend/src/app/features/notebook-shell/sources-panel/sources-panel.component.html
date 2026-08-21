@@ -4,13 +4,18 @@
   <div class="rail__actions">
     <label class="btn btn--ghost btn--block">
       @if (uploading()) {
-        Wird hochgeladen …
+        @if (uploadProgress(); as progress) {
+          Wird hochgeladen ({{ progress.done + 1 }}/{{ progress.total }}) …
+        } @else {
+          Wird hochgeladen …
+        }
       } @else {
-        + Datei hochladen
+        + Datei hochladen (mehrere möglich)
       }
       <input
         type="file"
         accept=".pdf,.txt,application/pdf,text/plain"
+        multiple
         [disabled]="uploading()"
         (change)="onFileSelected($event)"
       />
@@ -79,11 +84,24 @@
   @if (sources().length > 0) {
     <ul class="source-list">
       @for (source of sources(); track source.id) {
-        <li class="source-item" [class.source-item--active]="selectedId() === source.id">
-          <button type="button" class="source-item__main" (click)="select(source)">
-            <span class="source-item__type">{{ source.type === 'pdf' ? 'PDF' : 'TXT' }}</span>
-            <span class="source-item__title">{{ source.title }}</span>
-          </button>
+        <li
+          class="source-item"
+          [class.source-item--active]="selectedId() === source.id"
+          [class.source-item--excluded]="!source.includedInChat"
+        >
+          <div class="source-item__row">
+            <input
+              type="checkbox"
+              class="source-item__checkbox"
+              [checked]="source.includedInChat"
+              (change)="toggleIncluded(source, $event)"
+              title="Im Chat berücksichtigen"
+            />
+            <button type="button" class="source-item__main" (click)="select(source)">
+              <span class="source-item__type">{{ source.type === 'pdf' ? 'PDF' : 'TXT' }}</span>
+              <span class="source-item__title">{{ source.title }}</span>
+            </button>
+          </div>
           <div class="source-item__footer">
             <span class="source-item__meta">{{ source.charCount }} Zeichen</span>
             @if (pendingDeleteId() === source.id) {
