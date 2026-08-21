@@ -8,7 +8,14 @@
       @if (summaryPoints(); as points) {
         <ul class="studio-card__list">
           @for (point of points; track $index) {
-            <li>{{ point }}</li>
+            <li>
+              @if (point.title) {
+                <strong>{{ point.title }}</strong
+                >: {{ point.body }}
+              } @else {
+                {{ point.body }}
+              }
+            </li>
           }
         </ul>
       } @else {

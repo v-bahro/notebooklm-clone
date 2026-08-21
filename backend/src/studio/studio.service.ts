@@ -93,10 +93,12 @@ export class StudioService {
       .join('\n\n');
 
     const systemPrompt = [
-      'Du fasst die folgenden Quellen eines Notizbuchs für jemanden zusammen, der sie noch nicht kennt.',
-      'Antworte als 3-5 kurze Stichpunkte, jeder auf einer eigenen Zeile, beginnend mit "- ".',
-      'Jeder Stichpunkt nennt einen zentralen Punkt einer oder mehrerer Quellen – kurz und konkret, kein Fließtext.',
-      'Nutze ausschließlich die gegebenen Quellen, erfinde nichts hinzu. Antworte auf Deutsch, ohne Einleitung oder Überschrift.',
+      'Du beschreibst dem Nutzer knapp, WAS jede der folgenden Quellen ist – nicht die allgemeine Bedeutung der darin behandelten Begriffe.',
+      `Antworte mit genau einem Stichpunkt pro Quelle (hier: ${sources.length} Quelle(n), also genau ${sources.length} Zeile(n)), in der Reihenfolge der Auflistung unten, jede Zeile beginnend mit "- ".`,
+      'Format pro Zeile: "<Quellentitel>: <ein kurzer Satz, was diese Quelle konkret behandelt und was für eine Art Text es ist>".',
+      'Beispiel für den Unterschied: bei einer Quelle mit dem Titel "Burg.pdf" NICHT "Eine Burg ist eine befestigte Wohnanlage aus dem Mittelalter …" schreiben (das erklärt den Begriff, nicht die Quelle), sondern etwas wie "Burg.pdf: Wikipedia-Artikel über Geschichte, Bauweise und Funktion mittelalterlicher Burgen".',
+      'Nenne die Art oder Herkunft der Quelle (z. B. Wikipedia-Artikel, Anleitung, Studie, Blogpost) nur, wenn sie aus dem Inhalt selbst hervorgeht – erfinde nichts.',
+      'Nutze ausschließlich den Inhalt der jeweiligen Quelle. Antworte auf Deutsch, ohne Einleitung oder Überschrift.',
       '',
       sourcesBlock,
     ].join('\n');

@@ -34,9 +34,18 @@ export class StudioPanelComponent implements OnInit, OnChanges {
       .filter((line) => line.length > 0);
     const bullets = lines
       .filter((line) => line.startsWith('- '))
-      .map((line) => line.slice(2).trim());
+      .map((line) => this.splitTitle(line.slice(2).trim()));
     return bullets.length > 0 ? bullets : null;
   });
+
+  private splitTitle(point: string): { title: string | null; body: string } {
+    const separatorIndex = point.indexOf(': ');
+    if (separatorIndex <= 0) return { title: null, body: point };
+    return {
+      title: point.slice(0, separatorIndex),
+      body: point.slice(separatorIndex + 2),
+    };
+  }
 
   ngOnInit(): void {
     void this.studioService.loadSummary(this.notebookId);
