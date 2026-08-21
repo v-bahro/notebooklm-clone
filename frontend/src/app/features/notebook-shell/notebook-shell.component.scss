@@ -101,9 +101,8 @@
   inset: 0;
   z-index: 10;
   overflow-y: auto;
-  display: flex;
-  align-items: flex-start;
-  justify-content: center;
+  display: grid;
+  grid-template-columns: 1fr;
   padding: var(--space-lg);
   background: var(--paper);
 
@@ -116,6 +115,42 @@
     var(--rule) 28px
   );
   background-position: 0 60px;
+
+  // Schließen-Button und Artikel teilen sich dieselbe Grid-Zelle, damit der
+  // Button unabhängig von der Artikel-Höhe oben bleiben kann (sticky).
+  > * {
+    grid-column: 1;
+    grid-row: 1;
+  }
+}
+
+// Bleibt beim Scrollen innerhalb der Quelle sichtbar (sticky auf den
+// Overlay-Scrollcontainer bezogen) – vorher musste man erst ganz nach oben
+// zurückscrollen, um überhaupt schließen zu können.
+.source-overlay__close {
+  position: sticky;
+  top: 0;
+  justify-self: end;
+  align-self: start;
+  z-index: 1;
+  width: 2.25rem;
+  height: 2.25rem;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--rule);
+  border-radius: 50%;
+  background: var(--paper-raised);
+  color: var(--ink-soft);
+  font-size: 1.4rem;
+  line-height: 1;
+  cursor: pointer;
+
+  &:hover {
+    color: var(--ink);
+    border-color: var(--ink-soft);
+  }
 }
 
 .source-view {
@@ -129,10 +164,6 @@
 }
 
 .source-view__header {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: var(--space-md);
   margin-bottom: var(--space-md);
   padding-bottom: var(--space-md);
   border-bottom: 1px solid var(--rule);
